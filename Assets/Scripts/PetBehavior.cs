@@ -4,38 +4,24 @@ using UnityEngine;
 
 public class PetBehavior : MonoBehaviour
 {
-    private Animator animator;
-    private SpriteRenderer spriteRenderer;
-
-    // Sprites:
-    public Sprite happySprite;
-    public Sprite angrySprite;
-    public Sprite normalSprite;
-    public Sprite sadSprite;
-
     public enum PetMood { Happy, Normal, Angry, Sad, Bored }
     private PetMood currentMood = PetMood.Normal;
     private float lastAngryTime;
 
     // Variables for feed tracking
     private int rapidFeedAttempts = 0;
-    private const int MaxFeedAttemptsBeforeAngry = 6;
+    private const int MaxFeedAttemptsBeforeAngry = 3;
     private float lastFeedTime;
-    private const float FeedCooldown = 6.0f; // Time in seconds before counter resets
+    private const float FeedCooldown = 5.0f; // Time in seconds before counter resets
 
     // Variables for drink tracking
     private int rapidDrinkAttempts = 0;
-    private const int MaxDrinkAttemptsBeforeAngry = 6; // Adjust if needed
+    private const int MaxDrinkAttemptsBeforeAngry = 3; // Adjust if needed
     private float lastDrinkTime;
-    private const float DrinkCooldown = 6.0f; // Time in seconds before counter resets
+    private const float DrinkCooldown = 5.0f; // Time in seconds before counter resets
     public PetMood CurrentMood => currentMood;
+    public PetAnimations petAnimations;
 
-
-    void Start()
-    {
-        animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-    }
 
     // Call this method when the pet is fed
     public void RegisterFeed()
@@ -51,12 +37,11 @@ public class PetBehavior : MonoBehaviour
             if (rapidFeedAttempts > MaxFeedAttemptsBeforeAngry)
             {
                 currentMood = PetMood.Angry;
-                spriteRenderer.sprite = angrySprite; // ANGRY SPRITE
                 lastAngryTime = Time.time; // Update the last time pet became angry
                 Debug.Log("Pet has become angry due to overfeeding!");
+                petAnimations.AngryMood();
                 rapidFeedAttempts = 0; // Reset rapidFeedAttempts to avoid immediate re-triggering after cooldown
             }
-
         }
         else
         {
@@ -78,9 +63,9 @@ public class PetBehavior : MonoBehaviour
                 currentMood = PetMood.Angry;
                 lastAngryTime = Time.time; // Update the last time pet became angry
                 Debug.Log("Pet has become angry due to overdrinking!");
+                petAnimations.AngryMood();
                 rapidDrinkAttempts = 0; // Reset rapidDrinkAttempts to avoid immediate re-triggering after cooldown
             }
-
         }
         else
         {
@@ -98,7 +83,8 @@ public class PetBehavior : MonoBehaviour
             rapidFeedAttempts = 0;
             rapidDrinkAttempts = 0;
             Debug.Log("Pet has calmed down and is no longer angry.");
+            // Trigger the Normal status animation
+            petAnimations.NormalMood();
         }
     }
-
 }
