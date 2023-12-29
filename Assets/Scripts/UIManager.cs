@@ -2,16 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIManager : MonoBehaviour
 {
     [SerializeField] private StatsManager _statsManager;
-    [SerializeField] private Image _hungerMeter, _thirstMeter; // Declare images
+    [SerializeField] private Image _hungerMeter, _thirstMeter, _cleanlinessMeter, _funMeter, _happinessMeter; // Declare images
+    [SerializeField] private Image _healthStatus;
+    [SerializeField] private Sprite _healthySprite;
+    [SerializeField] private Sprite _sickSprite;
+
 
     private void FixedUpdate()
     {
         _hungerMeter.fillAmount = _statsManager.HungerPercent; // Set the fill amount of the image to the hunger percent
         _thirstMeter.fillAmount = _statsManager.ThirstPercent; // Set the fill amount of the image to the thirst percent
+        _cleanlinessMeter.fillAmount = _statsManager.CleanlinessPercent; // Set the fill amount of the image to the cleanliness percent
+        _funMeter.fillAmount = _statsManager.FunPercent; // Set the fill amount of the image to the fun percent
+        _happinessMeter.fillAmount = _statsManager.HappinessPercent; // Set the fill amount of the image to the happiness percent
+
+
+        if (_statsManager.CurrentHealthStatus == StatsManager.HealthStatus.Healthy)
+        {
+            _healthStatus.sprite = _healthySprite;
+        }
+        else
+        {
+            _healthStatus.sprite = _sickSprite;
+        }
     }
 
     // [SerializeField] private GameObject _gameOverPanel;

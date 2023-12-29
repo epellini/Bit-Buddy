@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PetStatusManager : MonoBehaviour
+public class StatsManager : MonoBehaviour
 {
     private float _hungerDecreaseRatePerHour = 4600f;
     private float _thirstDecreaseRatePerHour = 1800f;
