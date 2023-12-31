@@ -20,7 +20,8 @@ public class PetBehavior : MonoBehaviour
     private float lastDrinkTime;
     private const float DrinkCooldown = 5.0f; // Time in seconds before counter resets
     public PetMood CurrentMood => currentMood;
-    public PetAnimations petAnimations;
+    public ActionAnimations actionAnimator;
+    public EmotionAnimations emotionAnimator;
 
 
     // Call this method when the pet is fed
@@ -39,7 +40,7 @@ public class PetBehavior : MonoBehaviour
                 currentMood = PetMood.Angry;
                 lastAngryTime = Time.time; // Update the last time pet became angry
                 Debug.Log("Pet has become angry due to overfeeding!");
-                petAnimations.AngryMood();
+                emotionAnimator.AngryMood();
                 rapidFeedAttempts = 0; // Reset rapidFeedAttempts to avoid immediate re-triggering after cooldown
             }
         }
@@ -63,7 +64,7 @@ public class PetBehavior : MonoBehaviour
                 currentMood = PetMood.Angry;
                 lastAngryTime = Time.time; // Update the last time pet became angry
                 Debug.Log("Pet has become angry due to overdrinking!");
-                petAnimations.AngryMood();
+                emotionAnimator.AngryMood();
                 rapidDrinkAttempts = 0; // Reset rapidDrinkAttempts to avoid immediate re-triggering after cooldown
             }
         }
@@ -84,7 +85,7 @@ public class PetBehavior : MonoBehaviour
             rapidDrinkAttempts = 0;
             Debug.Log("Pet has calmed down and is no longer angry.");
             // Trigger the Normal status animation
-            petAnimations.NormalMood();
+            emotionAnimator.EmptyMood();
         }
     }
 }

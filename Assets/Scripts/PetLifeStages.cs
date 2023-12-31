@@ -15,10 +15,10 @@ public class PetLifeStages : MonoBehaviour
 
 
     // Time requirements for each stage
-    private readonly TimeSpan eggTimeRequirement = TimeSpan.FromSeconds(5);
-    private readonly TimeSpan babyTimeRequirement = TimeSpan.FromSeconds(15);
-    private readonly TimeSpan adultTimeRequirement = TimeSpan.FromSeconds(25);
-    private readonly TimeSpan seniorTimeRequirement = TimeSpan.FromSeconds(35);
+    private readonly TimeSpan eggTimeRequirement = TimeSpan.FromSeconds(400);
+    private readonly TimeSpan babyTimeRequirement = TimeSpan.FromSeconds(605);
+    private readonly TimeSpan adultTimeRequirement = TimeSpan.FromSeconds(2325);
+    private readonly TimeSpan seniorTimeRequirement = TimeSpan.FromSeconds(3325);
 
 
     private void Start(){
