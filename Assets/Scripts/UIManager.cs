@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Sprite _healthySprite;
     [SerializeField] private Sprite _sickSprite;
 
+    [SerializeField] private TMP_Text _hungerText, _thirstText, _cleanlinessText, _funText, _happinessText, _ageText; // Declare text
 
     private void FixedUpdate()
     {
@@ -29,6 +30,13 @@ public class UIManager : MonoBehaviour
         else
         {
             _healthStatus.sprite = _sickSprite;
+        }
+
+
+        // Update the age display
+        if (_ageText != null && _statsManager != null)
+        {
+            _ageText.text = _statsManager.GetFormattedAge();
         }
     }
 

@@ -1027,13 +1027,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11500000, guid: 3ecf2cd4a2c35124e9dbea7a1a2f6a25, type: 3}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 827001108}
+        m_TargetAssemblyTypeName: PetActions, Assembly-CSharp
+        m_MethodName: Feed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1300,6 +1300,7 @@ GameObject:
   - component: {fileID: 827001109}
   - component: {fileID: 827001111}
   - component: {fileID: 827001112}
+  - component: {fileID: 827001113}
   m_Layer: 0
   m_Name: Pet
   m_TagString: Untagged
@@ -1440,6 +1441,19 @@ MonoBehaviour:
   sadSprite: {fileID: 0}
   boredSprite: {fileID: 0}
   sleepingSprite: {fileID: 0}
+--- !u!114 &827001113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827001103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9868439626dce24aa9045052ec2562d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _statsManager: {fileID: 1922976611}
 --- !u!1 &890060536
 GameObject:
   m_ObjectHideFlags: 0
@@ -1585,9 +1599,8 @@ GameObject:
   - component: {fileID: 975637698}
   - component: {fileID: 975637701}
   - component: {fileID: 975637700}
-  - component: {fileID: 975637699}
   m_Layer: 5
-  m_Name: Date
+  m_Name: PetAge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1612,19 +1625,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -63.88004}
   m_SizeDelta: {x: -304.2309, y: 38.464}
   m_Pivot: {x: 0.5, y: 1}
---- !u!114 &975637699
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 975637697}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 275a8dc46dac2fe4f807c117e9d3cffc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dateText: {fileID: 975637700}
 --- !u!114 &975637700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1645,7 +1645,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TUES, 10:10PM
+  m_text: 'AGE: 1 DAYS OLD'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f4269832b1f88b9469ffda76495d8487, type: 2}
   m_sharedMaterial: {fileID: -8352941286120338847, guid: f4269832b1f88b9469ffda76495d8487, type: 2}
@@ -1672,8 +1672,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 19
-  m_fontSizeBase: 19
+  m_fontSize: 17
+  m_fontSizeBase: 17
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2062,6 +2062,12 @@ MonoBehaviour:
   _healthStatus: {fileID: 360572676}
   _healthySprite: {fileID: 21300000, guid: de6d797435057e441b1fcddc4a78fffd, type: 3}
   _sickSprite: {fileID: 21300000, guid: bd725e3e002f716488d32cf36be98c69, type: 3}
+  _hungerText: {fileID: 0}
+  _thirstText: {fileID: 0}
+  _cleanlinessText: {fileID: 0}
+  _funText: {fileID: 0}
+  _happinessText: {fileID: 0}
+  _ageText: {fileID: 975637700}
 --- !u!1 &1353720075
 GameObject:
   m_ObjectHideFlags: 0

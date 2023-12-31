@@ -6,6 +6,16 @@ using UnityEngine.Events;
 
 public class StatsManager : MonoBehaviour
 {
+
+    // public enum LifeStage { Egg, Baby, Adult, Senior, Death }
+    // public LifeStage CurrentLifeStage { get; private set; } = LifeStage.Egg;
+
+    // // Time requirements for each stage
+    // private readonly TimeSpan eggTimeRequirement = TimeSpan.FromSeconds(5);
+    // private readonly TimeSpan babyTimeRequirement = TimeSpan.FromSeconds(15);
+    // private readonly TimeSpan adultTimeRequirement = TimeSpan.FromSeconds(25);
+    // private readonly TimeSpan seniorTimeRequirement = TimeSpan.FromSeconds(35);
+
     private float _hungerDecreaseRatePerHour = 4600f;
     private float _thirstDecreaseRatePerHour = 1800f;
     private float _cleanDecreaseRatePerHour = 1800f;
@@ -53,17 +63,51 @@ public class StatsManager : MonoBehaviour
     public static UnityAction OnPlayerDeath;
 
     private DateTime _lastUpdateTime;
+    private DateTime _petBirthTime;
+    private TimeSpan _currentPetAge;
+
+     // Provide public access to the DateTime and TimeSpan variables
+    public DateTime LastUpdateTime => _lastUpdateTime;
+    public DateTime PetBirthTime => _petBirthTime;
+    public TimeSpan CurrentPetAge => _currentPetAge;
+
+
+
 
     private void Start()
     {
+        // Load current life stage
+        //CurrentLifeStage = (LifeStage)PlayerPrefs.GetInt("CurrentLifeStage");
+        //CurrentLifeStage = (LifeStage)PlayerPrefs.GetInt("CurrentLifeStage", (int)LifeStage.Egg);
+        //Debug.Log("Current Life Stage: " + CurrentLifeStage.ToString());
+        
+        string birthTimeStr = PlayerPrefs.GetString("PetBirthTime", "");
+        if (!string.IsNullOrEmpty(birthTimeStr))
+        {
+            long temp;
+            if (long.TryParse(birthTimeStr, out temp))
+            {
+                _petBirthTime = DateTime.FromBinary(temp);
+            }
+        }
+        else
+        {
+            _petBirthTime = DateTime.Now;
+            PlayerPrefs.SetString("PetBirthTime", _petBirthTime.ToBinary().ToString());
+            PlayerPrefs.Save();
+        }
+
+
         // Initialize _lastUpdateTime using PlayerPrefs or current time
-        string lastPlayTimeStr = PlayerPrefs.GetString("LastPlayTime");
+        string lastPlayTimeStr = PlayerPrefs.GetString("LastPlayTime", "");
         if (!string.IsNullOrEmpty(lastPlayTimeStr))
         {
             long temp;
             if (long.TryParse(lastPlayTimeStr, out temp))
             {
                 _lastUpdateTime = DateTime.FromBinary(temp);
+                TimeSpan timeSinceLastPlay = DateTime.Now - _lastUpdateTime;
+                _currentPetAge += timeSinceLastPlay;
             }
             else
             {
@@ -166,7 +210,6 @@ public class StatsManager : MonoBehaviour
         CalculateHappiness();
         UpdateHealthStatus();
 
-
         if (_currentHunger > 0)
         {
             _currentHunger -= hungerDecrease;
@@ -241,7 +284,6 @@ public class StatsManager : MonoBehaviour
         }
     }
 
-
     // Define weights for each need
     private float hungerWeight = 2f;
     private float thirstWeight = 1.5f;
@@ -264,13 +306,22 @@ public class StatsManager : MonoBehaviour
         _currentHappiness = Mathf.Clamp(_currentHappiness, 0, _maxHappiness);
     }
 
-
     private void OnApplicationQuit()
     {
         // Save the current system time as a string in the player prefs class
         long currentSystemTime = System.DateTime.Now.ToBinary();
         PlayerPrefs.SetString("LastPlayTime", currentSystemTime.ToString());
         print("Saving this date to prefs: " + System.DateTime.Now);
+
+        // Save current life stage
+        //PlayerPrefs.SetInt("CurrentLifeStage", (int)CurrentLifeStage);
+
+        // No need to save the birth time again if it hasn't changed, but ensure it's there on first run
+        if (!PlayerPrefs.HasKey("PetBirthTime"))
+        {
+            PlayerPrefs.SetString("PetBirthTime", _petBirthTime.ToBinary().ToString());
+        }
+
         SaveStats(_currentHunger, _currentThirst, _currentCleanliness, _currentFun, _currentHappiness);
     }
 
@@ -300,6 +351,8 @@ public class StatsManager : MonoBehaviour
         {
             // Get the old system time from player prefs as a string
             long temp = Convert.ToInt64(PlayerPrefs.GetString("LastPlayTime"));
+
+            //CurrentLifeStage = (LifeStage)PlayerPrefs.GetInt("CurrentLifeStage");
 
             // Convert the old time from binary to a DateTime variable
             DateTime oldSystemTime = DateTime.FromBinary(temp);
@@ -334,6 +387,50 @@ public class StatsManager : MonoBehaviour
             currentHappiness = Mathf.Clamp(currentHappiness, 0, _maxHappiness);
         }
     }
+
+
+    public string GetFormattedAge()
+    {
+        _currentPetAge = DateTime.Now - _petBirthTime;  // Calculate current pet age
+        // Return formatted age string
+        return $"AGE:{_currentPetAge.Days} DAYS OLD";
+        // {currentPetAge.Hours} hours, {currentPetAge.Minutes} minutes, {currentPetAge.Seconds} seconds";
+    }
+
+
+    // public void UpdateLifeStage()
+    // {
+    //     TimeSpan age = CurrentPetAge;
+    //     LifeStage previousStage = CurrentLifeStage;
+
+    //     if (CurrentLifeStage == LifeStage.Egg && age >= eggTimeRequirement)
+    //     {
+    //         CurrentLifeStage = LifeStage.Baby;
+    //         Debug.Log("Transitioned to Baby Stage");
+    //     }
+    //     else if (CurrentLifeStage == LifeStage.Baby && age >= babyTimeRequirement)
+    //     {
+    //         CurrentLifeStage = LifeStage.Adult;
+    //         Debug.Log("Transitioned to Adult Stage");
+    //     }
+    //     else if (CurrentLifeStage == LifeStage.Adult && age >= adultTimeRequirement)
+    //     {
+    //         CurrentLifeStage = LifeStage.Senior;
+    //         Debug.Log("Transitioned to Senior Stage");
+    //     }
+    //     else if (CurrentLifeStage == LifeStage.Senior && age >= seniorTimeRequirement)
+    //     {
+    //         CurrentLifeStage = LifeStage.Death;
+    //         Debug.Log("Transitioned to Death Stage");
+    //     }
+
+    //     // If the life stage has changed, log the current stage.
+    //     if (previousStage != CurrentLifeStage)
+    //     {
+    //         Debug.Log("Current Life Stage: " + CurrentLifeStage.ToString());
+    //     }
+    // }
+
 
     /// <summary>
     /// ACTION BUTTON METHODS
@@ -428,6 +525,6 @@ public class StatsManager : MonoBehaviour
 
     public void HealPet()
     {
-         _lowHappinessDuration = 0f;
+        _lowHappinessDuration = 0f;
     }
 }
