@@ -15,6 +15,6 @@ public class ActionAnimations : MonoBehaviour
     public void PlayAction() { actionAnimator.SetTrigger("PlayTrigger"); }
     public void PoopAction() { actionAnimator.SetTrigger("PoopTrigger"); }
     public void CleanAction() { actionAnimator.SetTrigger("CleanTrigger"); }
-    public void HealAction() { actionAnimator.SetTrigger("MedicineTrigger"); }
+    public void HealAction() { actionAnimator.SetTrigger("HealTrigger"); }
     public void DeathAction() { actionAnimator.SetTrigger("DeathTrigger"); }
 }
