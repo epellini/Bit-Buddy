@@ -182,8 +182,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: HAPPINESS
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2cb1bebf06776804baae4d58b6ba592d, type: 2}
-  m_sharedMaterial: {fileID: 7241525972325171329, guid: 2cb1bebf06776804baae4d58b6ba592d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f4269832b1f88b9469ffda76495d8487, type: 2}
+  m_sharedMaterial: {fileID: -8352941286120338847, guid: f4269832b1f88b9469ffda76495d8487, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -318,8 +318,8 @@ MonoBehaviour:
 
     Another status message here'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2cb1bebf06776804baae4d58b6ba592d, type: 2}
-  m_sharedMaterial: {fileID: 7241525972325171329, guid: 2cb1bebf06776804baae4d58b6ba592d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f4269832b1f88b9469ffda76495d8487, type: 2}
+  m_sharedMaterial: {fileID: -8352941286120338847, guid: f4269832b1f88b9469ffda76495d8487, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -926,7 +926,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &465056901
 Transform:
   m_ObjectHideFlags: 0
@@ -1592,6 +1592,7 @@ GameObject:
   - component: {fileID: 827001111}
   - component: {fileID: 827001112}
   - component: {fileID: 827001113}
+  - component: {fileID: 827001114}
   m_Layer: 0
   m_Name: Pet
   m_TagString: Untagged
@@ -1678,7 +1679,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ecf2cd4a2c35124e9dbea7a1a2f6a25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statsManager: {fileID: 1922976611}
+  statsManager: {fileID: 827001114}
   petBehavior: {fileID: 827001111}
 --- !u!95 &827001109
 Animator:
@@ -1734,9 +1735,29 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 827001103}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9868439626dce24aa9045052ec2562d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stageAnimator: {fileID: 0}
+  eggController: {fileID: 9100000, guid: 52bd2bf0d49382d42a41d2e377f78ce3, type: 2}
+  babyController: {fileID: 9100000, guid: 314fa1438e4b46540a030687d9b42c85, type: 2}
+  adultController: {fileID: 9100000, guid: cb4ff02493e4cf94e9986f0fe8304dba, type: 2}
+  seniorController: {fileID: 9100000, guid: 2fe5fa2ff81446b4b89ee7a1a954006a, type: 2}
+  deathController: {fileID: 9100000, guid: 559515bfb5d979b4ab2ca93a353883f3, type: 2}
+  _statsManager: {fileID: 1922976611}
+  <CurrentLifeStage>k__BackingField: 0
+--- !u!114 &827001114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827001103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a93167fec7059324b93573d6363f9f55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   eggController: {fileID: 9100000, guid: 52bd2bf0d49382d42a41d2e377f78ce3, type: 2}
@@ -1744,7 +1765,6 @@ MonoBehaviour:
   adultController: {fileID: 9100000, guid: cb4ff02493e4cf94e9986f0fe8304dba, type: 2}
   seniorController: {fileID: 9100000, guid: 2fe5fa2ff81446b4b89ee7a1a954006a, type: 2}
   deathController: {fileID: 9100000, guid: 559515bfb5d979b4ab2ca93a353883f3, type: 2}
-  _statsManager: {fileID: 1922976611}
 --- !u!1 &975637697
 GameObject:
   m_ObjectHideFlags: 0
@@ -1804,8 +1824,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 2 days
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2cb1bebf06776804baae4d58b6ba592d, type: 2}
-  m_sharedMaterial: {fileID: 7241525972325171329, guid: 2cb1bebf06776804baae4d58b6ba592d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f4269832b1f88b9469ffda76495d8487, type: 2}
+  m_sharedMaterial: {fileID: -8352941286120338847, guid: f4269832b1f88b9469ffda76495d8487, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2343,7 +2363,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71df4ec5dd8bb4e40aac4e721a44eab1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _statsManager: {fileID: 1922976611}
+  _statsManager: {fileID: 827001114}
   _hungerMeter: {fileID: 373511828}
   _thirstMeter: {fileID: 460575185}
   _cleanlinessMeter: {fileID: 305894282}
@@ -3069,13 +3089,14 @@ GameObject:
   m_Component:
   - component: {fileID: 1922976610}
   - component: {fileID: 1922976611}
+  - component: {fileID: 1922976612}
   m_Layer: 0
   m_Name: PetStatusManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1922976610
 Transform:
   m_ObjectHideFlags: 0
@@ -3103,6 +3124,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a93167fec7059324b93573d6363f9f55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  eggController: {fileID: 9100000, guid: 52bd2bf0d49382d42a41d2e377f78ce3, type: 2}
+  babyController: {fileID: 9100000, guid: 314fa1438e4b46540a030687d9b42c85, type: 2}
+  adultController: {fileID: 9100000, guid: cb4ff02493e4cf94e9986f0fe8304dba, type: 2}
+  seniorController: {fileID: 9100000, guid: 2fe5fa2ff81446b4b89ee7a1a954006a, type: 2}
+  deathController: {fileID: 9100000, guid: 559515bfb5d979b4ab2ca93a353883f3, type: 2}
+--- !u!95 &1922976612
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922976608}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 52bd2bf0d49382d42a41d2e377f78ce3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2018334490
 GameObject:
   m_ObjectHideFlags: 0

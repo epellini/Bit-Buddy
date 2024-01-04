@@ -31,7 +31,7 @@ public class StatsManager : MonoBehaviour
 
 
 
-    private float _hungerDecreaseRatePerHour = 4600f;
+    private float _hungerDecreaseRatePerHour = 3600f;
     private float _thirstDecreaseRatePerHour = 1800f;
     private float _cleanDecreaseRatePerHour = 1800f;
 
