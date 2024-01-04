@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -23,23 +24,17 @@ public class StatsManager : MonoBehaviour
     private readonly TimeSpan seniorTimeRequirement = TimeSpan.FromSeconds(35);
 
 
-
-
-
-
-
-
-
-
     private float _hungerDecreaseRatePerHour = 3600f;
     private float _thirstDecreaseRatePerHour = 1800f;
     private float _cleanDecreaseRatePerHour = 1800f;
+    private float _energyDecreaseRatePerHour = 1800f;
 
     private const string HungerKey = "Hunger";
     private const string ThirstKey = "Thirst";
     private const string CleanlinessKey = "Cleanliness";
     private const string FunKey = "Fun";
     private const string HappinessKey = "Happiness";
+    private const string EnergyKey = "Energy";
     private const string HealthStatusKey = "HealthStatus";
     private const string LowHappinessDurationKey = "LowHappinessDuration";
     private const string LastHealthCheckTimeKey = "LastHealthCheckTime";
@@ -49,6 +44,11 @@ public class StatsManager : MonoBehaviour
     // Public property to expose _currentHealthStatus
     public HealthStatus CurrentHealthStatus { get { return _currentHealthStatus; } }
     private float _lowHappinessDuration = 0f; // Time in hours the pet has been below the happiness threshold
+
+    [Header("Energy")]
+    private float _maxEnergy = 100f;
+    private float _currentEnergy;
+    public float EnergyPercent => _currentEnergy / _maxEnergy;
 
 
     [Header("Hunger")]
@@ -90,7 +90,7 @@ public class StatsManager : MonoBehaviour
 
     private void Start()
     {
-         stageAnimator = GetComponent<Animator>();
+        stageAnimator = GetComponent<Animator>();
         UpdateLifeStage();
         // Load current life stage
         CurrentLifeStage = (LifeStage)PlayerPrefs.GetInt("CurrentLifeStage");
@@ -165,13 +165,14 @@ public class StatsManager : MonoBehaviour
         }
 
         // Check if PlayerPrefs have been set for hunger and thirst, and if not, use default values.
-        if (!PlayerPrefs.HasKey(HungerKey) || !PlayerPrefs.HasKey(ThirstKey) || !PlayerPrefs.HasKey(CleanlinessKey) || !PlayerPrefs.HasKey(FunKey) || !PlayerPrefs.HasKey(HappinessKey))
+        if (!PlayerPrefs.HasKey(HungerKey) || !PlayerPrefs.HasKey(ThirstKey) || !PlayerPrefs.HasKey(CleanlinessKey) || !PlayerPrefs.HasKey(FunKey) || !PlayerPrefs.HasKey(HappinessKey) || !PlayerPrefs.HasKey(EnergyKey))
         {
             _currentHunger = _maxHunger; // Set a default value for hunger
             _currentThirst = _maxThirst; // Set a default value for thirst
             _currentCleanliness = _maxCleanliness; // Set a default value for cleanliness
             _currentFun = _maxFun; // Set a default value for fun
             _currentHappiness = _maxHappiness; // Set a default value for happiness
+            _currentEnergy = _maxEnergy; // Set a default value for energy
         }
         else
         {
@@ -181,10 +182,11 @@ public class StatsManager : MonoBehaviour
             _currentCleanliness = PlayerPrefs.GetFloat(CleanlinessKey, _maxCleanliness);
             _currentFun = PlayerPrefs.GetFloat(FunKey, _maxFun);
             _currentHappiness = PlayerPrefs.GetFloat(HappinessKey, _maxHappiness);
+            _currentEnergy = PlayerPrefs.GetFloat(EnergyKey, _maxEnergy);
         }
 
         // Load player stats (hunger and thirst) from PlayerPrefs
-        LoadStats(out _currentHunger, out _currentThirst, out _currentCleanliness, out _currentFun, out _currentHappiness);
+        LoadStats(out _currentHunger, out _currentThirst, out _currentCleanliness, out _currentFun, out _currentHappiness, out _currentEnergy);
 
         // Calculate time passed using TimeSpan
         TimeSpan timePassed = DateTime.Now - _lastUpdateTime;
@@ -195,6 +197,7 @@ public class StatsManager : MonoBehaviour
         _currentCleanliness = Mathf.Clamp(_currentCleanliness, 0, _maxCleanliness);
         _currentFun = Mathf.Clamp(_currentFun, 0, _maxFun);
         _currentHappiness = Mathf.Clamp(_currentHappiness, 0, _maxHappiness);
+        _currentEnergy = Mathf.Clamp(_currentEnergy, 0, _maxEnergy);
 
         // Update health status based on new low happiness duration
         UpdateHealthStatus();
@@ -227,6 +230,7 @@ public class StatsManager : MonoBehaviour
         float thirstDecrease = _thirstDecreaseRatePerHour * hoursPassed;
         float cleanDecrease = _cleanDecreaseRatePerHour * hoursPassed;
         float funDecrease = _cleanDecreaseRatePerHour * hoursPassed;
+        float energyDecrease = _energyDecreaseRatePerHour * hoursPassed;
         UpdateLifeStage();
         CalculateHappiness();
         UpdateHealthStatus();
@@ -264,6 +268,15 @@ public class StatsManager : MonoBehaviour
             if (_currentFun < 0)
             {
                 _currentFun = 0;
+            }
+        }
+
+        if (_currentEnergy > 0)
+        {
+            _currentEnergy -= energyDecrease;
+            if (_currentEnergy < 0)
+            {
+                _currentEnergy = 0;
             }
         }
 
@@ -310,12 +323,13 @@ public class StatsManager : MonoBehaviour
     private float thirstWeight = 1.5f;
     private float cleanlinessWeight = 1.1f;
     private float funWeight = 1f;
+    private float energyWeight = 0.8f;
 
     private void CalculateHappiness()
     {
         // Calculate the weighted sum of the needs
-        float totalWeight = hungerWeight + thirstWeight + cleanlinessWeight + funWeight;
-        float weightedSum = HungerPercent * hungerWeight + ThirstPercent * thirstWeight + CleanlinessPercent * cleanlinessWeight + FunPercent * funWeight;
+        float totalWeight = hungerWeight + thirstWeight + cleanlinessWeight + funWeight + energyWeight;
+        float weightedSum = HungerPercent * hungerWeight + ThirstPercent * thirstWeight + CleanlinessPercent * cleanlinessWeight + FunPercent * funWeight + EnergyPercent * energyWeight;
 
         // Calculate the weighted average
         float weightedAverage = weightedSum / totalWeight;
@@ -343,16 +357,17 @@ public class StatsManager : MonoBehaviour
             PlayerPrefs.SetString("PetBirthTime", _petBirthTime.ToBinary().ToString());
         }
 
-        SaveStats(_currentHunger, _currentThirst, _currentCleanliness, _currentFun, _currentHappiness);
+        SaveStats(_currentHunger, _currentThirst, _currentCleanliness, _currentFun, _currentHappiness, _currentEnergy);
     }
 
-    private void SaveStats(float currentHunger, float currentThirst, float currentCleanliness, float currentFun, float currentHappiness)
+    private void SaveStats(float currentHunger, float currentThirst, float currentCleanliness, float currentFun, float currentHappiness, float currentEnergy)
     {
         PlayerPrefs.SetFloat(HungerKey, currentHunger);
         PlayerPrefs.SetFloat(ThirstKey, currentThirst);
         PlayerPrefs.SetFloat(CleanlinessKey, currentCleanliness);
         PlayerPrefs.SetFloat(FunKey, currentFun);
         PlayerPrefs.SetFloat(HappinessKey, currentHappiness);
+        PlayerPrefs.SetFloat(EnergyKey, currentEnergy);
 
         PlayerPrefs.SetInt(HealthStatusKey, (int)_currentHealthStatus);
         PlayerPrefs.SetFloat(LowHappinessDurationKey, _lowHappinessDuration);
@@ -360,13 +375,14 @@ public class StatsManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    private void LoadStats(out float currentHunger, out float currentThirst, out float currentCleanliness, out float currentFun, out float currentHappiness)
+    private void LoadStats(out float currentHunger, out float currentThirst, out float currentCleanliness, out float currentFun, out float currentHappiness, out float currentEnergy)
     {
         currentHunger = PlayerPrefs.GetFloat(HungerKey, 100f); // Default value of 100
         currentThirst = PlayerPrefs.GetFloat(ThirstKey, 100f); // Default value of 100
         currentCleanliness = PlayerPrefs.GetFloat(CleanlinessKey, 100f); // Default value of 100
         currentFun = PlayerPrefs.GetFloat(FunKey, 100f); // Default value of 100
         currentHappiness = PlayerPrefs.GetFloat(HappinessKey, 100f); // Default value of 100
+        currentEnergy = PlayerPrefs.GetFloat(EnergyKey, 100f); // Default value of 100
 
         if (PlayerPrefs.HasKey("LastPlayTime"))
         {
@@ -392,6 +408,7 @@ public class StatsManager : MonoBehaviour
             currentCleanliness = PlayerPrefs.GetFloat(CleanlinessKey, 100f); // Default value of 100
             currentFun = PlayerPrefs.GetFloat(FunKey, 100f); // Default value of 100
             currentHappiness = PlayerPrefs.GetFloat(HappinessKey, 100f); // Default value of 100
+            currentEnergy = PlayerPrefs.GetFloat(EnergyKey, 100f); // Default value of 100
 
             // Decrease the stats based on the time passed.
             currentHunger -= _hungerDecreaseRatePerHour * timePassedInHours;
@@ -399,6 +416,7 @@ public class StatsManager : MonoBehaviour
             currentCleanliness -= _cleanDecreaseRatePerHour * timePassedInHours;
             currentFun -= _cleanDecreaseRatePerHour * timePassedInHours;
             currentHappiness -= _cleanDecreaseRatePerHour * timePassedInHours;
+            currentEnergy -= _energyDecreaseRatePerHour * timePassedInHours;
 
             // Ensure that stats don't go below zero or exceed their maximum values.
             currentHunger = Mathf.Clamp(currentHunger, 0, _maxHunger);
@@ -406,6 +424,7 @@ public class StatsManager : MonoBehaviour
             currentCleanliness = Mathf.Clamp(currentCleanliness, 0, _maxCleanliness);
             currentFun = Mathf.Clamp(currentFun, 0, _maxFun);
             currentHappiness = Mathf.Clamp(currentHappiness, 0, _maxHappiness);
+            currentEnergy = Mathf.Clamp(currentEnergy, 0, _maxEnergy);
         }
     }
 
@@ -567,6 +586,25 @@ public class StatsManager : MonoBehaviour
         {
             _currentHappiness = 0;
         }
+    }
+
+    public void IncreaseEnergy(float energyAmount)
+    {
+        _currentEnergy += energyAmount;
+        if (_currentEnergy > _maxEnergy)
+        {
+            _currentEnergy = _maxEnergy;
+        }
+    }
+
+    public float DecreaseEnergy(float energyAmount)
+    {
+        _currentEnergy -= energyAmount;
+        if (_currentEnergy < 0)
+        {
+            _currentEnergy = 0;
+        }
+        return _currentEnergy;
     }
 
     public void HealPet()

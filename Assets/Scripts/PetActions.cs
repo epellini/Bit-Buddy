@@ -59,14 +59,21 @@ public class PetActions : MonoBehaviour
 
     public void Sleep()
     {
-        float hungerAmountToDecrease = 10f;
-        float thirstAmountToDecrease = 10f;
-        float funAmountToDecrease = 10f;
-        float cleanlinessAmountToDecrease = 10f;
-        statsManager.DecreaseHunger(hungerAmountToDecrease);
-        statsManager.DecreaseThirst(thirstAmountToDecrease);
-        statsManager.DecreaseFun(funAmountToDecrease);
-        statsManager.DecreaseCleanliness(cleanlinessAmountToDecrease);
+        if (statsManager.CurrentHealthStatus == StatsManager.HealthStatus.Sick)
+        {
+            // Show visually that the pet does not want to sleep bc it's sick
+            Debug.Log("I'm sick and I don't want to sleep");
+            return;
+        }
+        if (statsManager.EnergyPercent > 0.7f)
+        {
+            // Show visually that the pet does not want to sleep bc it's full
+            Debug.Log("I'm full of energy and I don't want to sleep!");
+            return;
+        }
+
+        float sleepAmountToIncrease = 100f;
+        statsManager.IncreaseEnergy(sleepAmountToIncrease);
     }
 
     public void Clean()
@@ -106,6 +113,8 @@ public class PetActions : MonoBehaviour
         float thirstAmountToDecrease = 5f;
         float funAmountToIncrease = 20f;
         float cleanlinessAmountToDecrease = 2f;
+        float energyAmountToDecrease = 5f;
+        statsManager.DecreaseEnergy(energyAmountToDecrease);
         statsManager.DecreaseHunger(hungerAmountToDecrease);
         statsManager.DecreaseThirst(thirstAmountToDecrease);
         statsManager.IncreaseFun(funAmountToIncrease);

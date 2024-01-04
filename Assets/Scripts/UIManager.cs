@@ -7,10 +7,11 @@ using TMPro;
 public class UIManager : MonoBehaviour
 {
     [SerializeField] private StatsManager _statsManager;
-    [SerializeField] private Image _hungerMeter, _thirstMeter, _cleanlinessMeter, _funMeter, _happinessMeter; // Declare images
+    [SerializeField] private Image _hungerMeter, _thirstMeter, _cleanlinessMeter, _funMeter, _happinessMeter, _energyMeter; // Declare images
     [SerializeField] private Image _healthStatus;
     [SerializeField] private Sprite _healthySprite;
     [SerializeField] private Sprite _sickSprite;
+    [SerializeField] private Sprite _angrySprite;
 
     [SerializeField] private TMP_Text _hungerText, _thirstText, _cleanlinessText, _funText, _happinessText, _ageText; // Declare text
 
@@ -21,6 +22,7 @@ public class UIManager : MonoBehaviour
         _cleanlinessMeter.fillAmount = _statsManager.CleanlinessPercent; // Set the fill amount of the image to the cleanliness percent
         _funMeter.fillAmount = _statsManager.FunPercent; // Set the fill amount of the image to the fun percent
         _happinessMeter.fillAmount = _statsManager.HappinessPercent; // Set the fill amount of the image to the happiness percent
+        _energyMeter.fillAmount = _statsManager.EnergyPercent; // Set the fill amount of the image to the energy percent
 
 
         if (_statsManager.CurrentHealthStatus == StatsManager.HealthStatus.Healthy)
