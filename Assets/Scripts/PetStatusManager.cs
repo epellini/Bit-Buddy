@@ -393,7 +393,7 @@ public class StatsManager : MonoBehaviour
     {
         _currentPetAge = DateTime.Now - _petBirthTime;  // Calculate current pet age
         // Return formatted age string
-        return $"AGE:{_currentPetAge.Days} DAYS OLD";
+        return $"{_currentPetAge.Days} DAYS";
         // {currentPetAge.Hours} hours, {currentPetAge.Minutes} minutes, {currentPetAge.Seconds} seconds";
     }
 
