@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
@@ -24,10 +25,10 @@ public class StatsManager : MonoBehaviour
     private readonly TimeSpan seniorTimeRequirement = TimeSpan.FromSeconds(35);
 
 
-    private float _hungerDecreaseRatePerHour = 3600f;
-    private float _thirstDecreaseRatePerHour = 1800f;
-    private float _cleanDecreaseRatePerHour = 1800f;
-    private float _energyDecreaseRatePerHour = 1800f;
+    private float _hungerDecreaseRatePerHour = 30000f;
+    private float _thirstDecreaseRatePerHour = 30000f;
+    private float _cleanDecreaseRatePerHour = 30000f;
+    private float _energyDecreaseRatePerHour = 30000f;
 
     private const string HungerKey = "Hunger";
     private const string ThirstKey = "Thirst";
@@ -319,23 +320,28 @@ public class StatsManager : MonoBehaviour
     }
 
     // Define weights for each need
-    private float hungerWeight = 2f;
-    private float thirstWeight = 1.5f;
-    private float cleanlinessWeight = 1.1f;
-    private float funWeight = 1f;
-    private float energyWeight = 0.8f;
+    private float hungerWeight = 0.7f;
+    private float thirstWeight = 0.6f;
+    private float cleanlinessWeight = 1f;
+    private float funWeight = 0.8f;
+    private float energyWeight = 0.7f;
+
+    private float happinessChangeRate = 0.0004f;
 
     private void CalculateHappiness()
     {
         // Calculate the weighted sum of the needs
         float totalWeight = hungerWeight + thirstWeight + cleanlinessWeight + funWeight + energyWeight;
         float weightedSum = HungerPercent * hungerWeight + ThirstPercent * thirstWeight + CleanlinessPercent * cleanlinessWeight + FunPercent * funWeight + EnergyPercent * energyWeight;
-
+        
         // Calculate the weighted average
         float weightedAverage = weightedSum / totalWeight;
 
-        // Assign this weighted average to the current happiness
-        _currentHappiness = weightedAverage * _maxHappiness;
+         // Calculate the change in happiness
+        float happinessChange = (weightedAverage * _maxHappiness - _currentHappiness) * happinessChangeRate;
+
+         // Update the current happiness with a moving average
+        _currentHappiness += happinessChange;
 
         // Ensure that happiness does not go below 0 or above the maximum
         _currentHappiness = Mathf.Clamp(_currentHappiness, 0, _maxHappiness);
@@ -431,10 +437,30 @@ public class StatsManager : MonoBehaviour
 
     public string GetFormattedAge()
     {
+
+        if (CurrentLifeStage == LifeStage.Death)
+        {
+            return $"DAYS SURVIVED: {_currentPetAge.Days}";
+        }
+
         _currentPetAge = DateTime.Now - _petBirthTime;  // Calculate current pet age
         // Return formatted age string
-        return $"{_currentPetAge.Days} DAYS";
+        return $"AGE:{_currentPetAge.Days} DAYS";
         // {currentPetAge.Hours} hours, {currentPetAge.Minutes} minutes, {currentPetAge.Seconds} seconds";
+    }
+
+    public string GetFormattedStage()
+    {
+        //return CurrentLifeStage.ToString();
+
+        if(CurrentLifeStage == LifeStage.Death)
+        {
+            return null;
+        }
+        else
+        {
+            return $"STAGE:{CurrentLifeStage.ToString()}";
+        }
     }
 
 

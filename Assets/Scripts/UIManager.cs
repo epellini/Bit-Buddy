@@ -13,7 +13,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Sprite _sickSprite;
     [SerializeField] private Sprite _angrySprite;
 
-    [SerializeField] private TMP_Text _hungerText, _thirstText, _cleanlinessText, _funText, _happinessText, _ageText; // Declare text
+    [SerializeField] private TMP_Text _hungerText, _thirstText, _cleanlinessText, _funText, _happinessText, _ageText, _stageText; // Declare text
 
     private void FixedUpdate()
     {
@@ -39,6 +39,12 @@ public class UIManager : MonoBehaviour
         if (_ageText != null && _statsManager != null)
         {
             _ageText.text = _statsManager.GetFormattedAge();
+        }
+
+        // Update the stage display
+        if (_stageText != null && _statsManager != null)
+        {
+            _stageText.text = _statsManager.GetFormattedStage();
         }
     }
 
