@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PetBehavior : MonoBehaviour
 {
     public ConsoleMessages consoleMessages;
     public StatsManager statsManager;
-    public enum PetMood { Happy, Normal, Angry, Sad, Bored, Hungry, Sick }
+    public enum PetMood { Happy, Content, Normal, Angry, Sad, Bored, Hungry, Sick }
     private PetMood currentMood = PetMood.Normal;
     private float lastAngryTime;
 
@@ -27,35 +28,30 @@ public class PetBehavior : MonoBehaviour
     public EmotionAnimations emotionAnimator;
 
     float currentHungerPercentage;
+    float currentHappinessPercentage;
+
+
     float currentThirstPercentage;
     float currentCleanlinessPercentage;
     float currentFunPercentage;
     float currentEnergyPercentage;
-    float currentHappinessPercentage;
 
+    private void GetHappiness()
+    {
+        currentHappinessPercentage = statsManager.HappinessPercent;
+    }
 
     private void Start()
     {
+        GetHappiness();
         //Grab the current status percentage from the stats manager
-        float currentHungerPercentage = statsManager.HungerPercent;
-        float currentFunPercentage = statsManager.FunPercent;
-        float currentThirstPercentage = statsManager.ThirstPercent;
-        float currentCleanlinessPercentage = statsManager.CleanlinessPercent;
-        float currentEnergyPercentage = statsManager.EnergyPercent;
+        currentHungerPercentage = statsManager.HungerPercent;
 
+        currentFunPercentage = statsManager.FunPercent;
+        currentThirstPercentage = statsManager.ThirstPercent;
+        currentCleanlinessPercentage = statsManager.CleanlinessPercent;
+        currentEnergyPercentage = statsManager.EnergyPercent;
         UpdateHappiness();
-        Debug.Log($"Happiness is {currentHappinessPercentage}");
-
-        // HAPPINESS
-        if (currentHappinessPercentage <= 1f)
-        {
-            emotionAnimator.VeryHappyMood();
-        }
-        if (currentHappinessPercentage <= 0.8f)
-        {
-            emotionAnimator.HappyMood();
-        }
-
 
         /// HUNGER
         if (currentHungerPercentage < 0.2f)
@@ -80,42 +76,42 @@ public class PetBehavior : MonoBehaviour
 
     public void UpdateHappiness()
     {
-        currentHappinessPercentage = statsManager.HappinessPercent;
-
-        switch (currentHappinessPercentage)
+        GetHappiness();
+        if (currentHappinessPercentage <= 0.2f)
         {
-            case float n when (n <= 1f):
-                emotionAnimator.EmptyMood();
-                emotionAnimator.VeryHappyMood();
-                break;
-            case float n when (n <= 0.8f):
-                emotionAnimator.EmptyMood();
-                emotionAnimator.HappyMood();
-                break;
-            case float n when (n <= 0.6f):
-                emotionAnimator.EmptyMood();
-                emotionAnimator.ContentMood();
-                break;
-            case float n when (n <= 0.4f):
-                emotionAnimator.EmptyMood();
-                emotionAnimator.SadMood();
-                break;
-            case float n when (n <= 0.2f):
-                emotionAnimator.EmptyMood();
-                emotionAnimator.CryMood();
-                break;
-            case float n when (n <= 0f):
-                emotionAnimator.EmptyMood();
-                break;
+            emotionAnimator.CryMood();
+            return;
+        }
+        else if (currentHappinessPercentage <= 0.4f)
+        {
+
+            emotionAnimator.SadMood();
+            return;
+        }
+        else if (currentHappinessPercentage <= 0.6f)
+        {
+            emotionAnimator.ContentMood();
+            return;
+        }
+        else if (currentHappinessPercentage <= 0.8f)
+        {
+            emotionAnimator.HappyMood();
+            return;
+        }
+        else // currentHappinessPercentage > 0.8f
+        {
+            emotionAnimator.VeryHappyMood();
+            return;
         }
     }
 
     private void Update()
     {
         currentHungerPercentage = statsManager.HungerPercent;
+        //currentHappinessPercentage = statsManager.HappinessPercent;
         currentFunPercentage = statsManager.FunPercent;
+        GetHappiness();
         UpdateHappiness();
-
 
         // Handle mood due to BOREDOM
         if (currentFunPercentage < 0.2f)
@@ -147,8 +143,6 @@ public class PetBehavior : MonoBehaviour
         }
         else if (currentMood == PetMood.Sick) { ResetMood(); }
 
-
-
         // Handle mood due to anger
         if (currentMood == PetMood.Angry && Time.time - lastAngryTime > FeedCooldown)
         {
@@ -157,7 +151,6 @@ public class PetBehavior : MonoBehaviour
 
         // ... You might have other mood checks here
     }
-
 
     // Call this method when the pet is fed
     public void RegisterFeed()
@@ -210,17 +203,6 @@ public class PetBehavior : MonoBehaviour
         }
     }
 
-    private void SetSadMood()
-    {
-        currentMood = PetMood.Sad;
-        emotionAnimator.SadMood();
-    }
-
-    private void SetHappyMood()
-    {
-        currentMood = PetMood.Happy;
-        emotionAnimator.HappyMood();
-    }
 
     private void SetSickMood()
     {

@@ -9,6 +9,7 @@ public class EmotionAnimations : MonoBehaviour
     {
         emotionAnimator = GetComponent<Animator>();
     }
+    
     // Pet Moods
     public void AngryMood() { emotionAnimator.SetTrigger("AngryTrigger"); }
     public void NormalMood() { emotionAnimator.SetTrigger("NormalTrigger"); }
