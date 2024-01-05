@@ -11,7 +11,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Image _healthStatus;
     [SerializeField] private Sprite _healthySprite;
     [SerializeField] private Sprite _sickSprite;
-    [SerializeField] private Sprite _angrySprite;
+    [SerializeField] private Sprite deathSprite;
+    [SerializeField] private GameObject Pet;
+    [SerializeField] private GameObject _gameOverPanel;
 
     [SerializeField] private TMP_Text _hungerText, _thirstText, _cleanlinessText, _funText, _happinessText, _ageText, _stageText; // Declare text
 
@@ -41,39 +43,47 @@ public class UIManager : MonoBehaviour
             _ageText.text = _statsManager.GetFormattedAge();
         }
 
-        // Update the stage display
         if (_stageText != null && _statsManager != null)
         {
             _stageText.text = _statsManager.GetFormattedStage();
         }
+
     }
 
-    // [SerializeField] private GameObject _gameOverPanel;
     // [SerializeField] private GameObject _pausePanel;
     // [SerializeField] private GameObject _gamePanel;
     // [SerializeField] private GameObject _startPanel;
     // [SerializeField] private GameObject _winPanel;
 
-    // private void OnEnable()
-    // {
-    //     StatsManager.OnPlayerDeath += GameOver;
-    //     StatsManager.OnPlayerWin += Win;
-    // }
+    private void OnEnable()
+    {
+        StatsManager.OnPlayerDeath += GameOver;
+    }
 
-    // private void OnDisable()
-    // {
-    //     StatsManager.OnPlayerDeath -= GameOver;
-    //     StatsManager.OnPlayerWin -= Win;
-    // }
+    private void OnDisable()
+    {
+        StatsManager.OnPlayerDeath -= GameOver;
+    }
 
-    // private void Start()
-    // {
-    //     _gameOverPanel.SetActive(false);
-    //     _pausePanel.SetActive(false);
-    //     _gamePanel.SetActive(false);
-    //     _startPanel.SetActive(true);
-    //     _winPanel.SetActive(false);
-    // }
+    private void Start()
+    {
+        _gameOverPanel.SetActive(false);
+        //_pausePanel.SetActive(false);
+        //_startPanel.SetActive(true);
+        //_winPanel.SetActive(false);
+    }
+    public void GameOver()
+    {
+        SpriteRenderer spriteRenderer = Pet.GetComponent<SpriteRenderer>();
+        spriteRenderer.sprite = deathSprite;
+        _gameOverPanel.SetActive(true);
+        //Time.timeScale = 0;
+    }
+
+    public void StartGame()
+    {
+        _gameOverPanel.SetActive(false);
+    }
 
     // private void Update()
     // {
@@ -97,12 +107,6 @@ public class UIManager : MonoBehaviour
     //     Time.timeScale = 1;
     // }
 
-    // public void GameOver()
-    // {
-    //     _gameOverPanel.SetActive(true);
-    //     _gamePanel.SetActive(false);
-    //     Time.timeScale = 0;
-    // }
 
     // public void Win()
     // {

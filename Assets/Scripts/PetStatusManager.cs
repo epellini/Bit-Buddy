@@ -9,7 +9,8 @@ using UnityEngine.Events;
 public class StatsManager : MonoBehaviour
 {
     private Animator stageAnimator;
-     public RuntimeAnimatorController eggController;
+   
+    public RuntimeAnimatorController eggController;
     public RuntimeAnimatorController babyController;
     public RuntimeAnimatorController adultController;
     public RuntimeAnimatorController seniorController;
@@ -82,10 +83,12 @@ public class StatsManager : MonoBehaviour
     private DateTime _petBirthTime;
     private TimeSpan _currentPetAge;
 
-     // Provide public access to the DateTime and TimeSpan variables
+    // Provide public access to the DateTime and TimeSpan variables
     // public DateTime LastUpdateTime => _lastUpdateTime;
     // public DateTime PetBirthTime => _petBirthTime;
     // public TimeSpan CurrentPetAge => _currentPetAge;
+
+    public UIManager uiManager;
 
 
 
@@ -97,7 +100,7 @@ public class StatsManager : MonoBehaviour
         CurrentLifeStage = (LifeStage)PlayerPrefs.GetInt("CurrentLifeStage");
         //CurrentLifeStage = (LifeStage)PlayerPrefs.GetInt("CurrentLifeStage", (int)LifeStage.Egg);
         Debug.Log("Current Life Stage: " + CurrentLifeStage.ToString());
-        
+
         string birthTimeStr = PlayerPrefs.GetString("PetBirthTime", "");
         if (!string.IsNullOrEmpty(birthTimeStr))
         {
@@ -214,7 +217,7 @@ public class StatsManager : MonoBehaviour
         Debug.Log($"Time IN Seconds Passed: {timePassed.TotalSeconds} seconds");
 
     }
-
+    private bool _hasPlayerDied;
     private void Update()
     {
         // Calculate time passed since the last frame using DateTime.
@@ -235,6 +238,7 @@ public class StatsManager : MonoBehaviour
         UpdateLifeStage();
         CalculateHappiness();
         UpdateHealthStatus();
+        
 
         if (_currentHunger > 0)
         {
@@ -281,14 +285,43 @@ public class StatsManager : MonoBehaviour
             }
         }
 
-        if (_currentHunger <= 0 && _currentThirst <= 0 && _currentCleanliness <= 0)
-        {
             // Handle player death or any other relevant logic.
-            // OnPlayerDeath?.Invoke();
-            // Debug.Log("You died");
-            _currentHunger = 0;
-            _currentThirst = 0;
+        if (!_hasPlayerDied && _currentHunger <= 0 && _currentThirst <= 0 && _currentCleanliness <= 0)
+        {
+            uiManager.GameOver();
+            _hasPlayerDied = true;
+            CurrentLifeStage = LifeStage.Death;
+            stageAnimator.enabled = false;
+            OnPlayerDeath?.Invoke();
         }
+    }
+
+    public void ResetPet()
+    {
+        // Reset UI Elements
+        uiManager.StartGame();
+        //uiMnanager.UpdateStageText(GetFormattedStage());
+
+
+        _currentHunger = _maxHunger;
+        _currentThirst = _maxThirst;
+        _currentCleanliness = _maxCleanliness;
+        _currentFun = _maxFun;
+        _currentHappiness = _maxHappiness;
+        _currentEnergy = _maxEnergy;
+        _currentHealthStatus = HealthStatus.Healthy;
+        _lowHappinessDuration = 0f;
+        _lastUpdateTime = DateTime.Now;
+        _petBirthTime = DateTime.Now;
+        _currentPetAge = TimeSpan.Zero;
+        CurrentLifeStage = LifeStage.Egg;
+        stageAnimator.enabled = true;
+        _hasPlayerDied = false;
+
+        ApplyLifeStageToAnimator(CurrentLifeStage);
+        PlayerPrefs.DeleteAll();
+        //GetFormattedStage();
+        PlayerPrefs.Save();
     }
 
 
@@ -333,14 +366,14 @@ public class StatsManager : MonoBehaviour
         // Calculate the weighted sum of the needs
         float totalWeight = hungerWeight + thirstWeight + cleanlinessWeight + funWeight + energyWeight;
         float weightedSum = HungerPercent * hungerWeight + ThirstPercent * thirstWeight + CleanlinessPercent * cleanlinessWeight + FunPercent * funWeight + EnergyPercent * energyWeight;
-        
+
         // Calculate the weighted average
         float weightedAverage = weightedSum / totalWeight;
 
-         // Calculate the change in happiness
+        // Calculate the change in happiness
         float happinessChange = (weightedAverage * _maxHappiness - _currentHappiness) * happinessChangeRate;
 
-         // Update the current happiness with a moving average
+        // Update the current happiness with a moving average
         _currentHappiness += happinessChange;
 
         // Ensure that happiness does not go below 0 or above the maximum
@@ -453,7 +486,7 @@ public class StatsManager : MonoBehaviour
     {
         //return CurrentLifeStage.ToString();
 
-        if(CurrentLifeStage == LifeStage.Death)
+        if (CurrentLifeStage == LifeStage.Death)
         {
             return null;
         }
