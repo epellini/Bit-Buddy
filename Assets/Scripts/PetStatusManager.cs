@@ -8,8 +8,8 @@ using UnityEngine.Events;
 
 public class StatsManager : MonoBehaviour
 {
+    public PetBehavior petBehavior;
     private Animator stageAnimator;
-   
     public RuntimeAnimatorController eggController;
     public RuntimeAnimatorController babyController;
     public RuntimeAnimatorController adultController;
@@ -26,10 +26,10 @@ public class StatsManager : MonoBehaviour
     private readonly TimeSpan seniorTimeRequirement = TimeSpan.FromSeconds(35);
 
 
-    private float _hungerDecreaseRatePerHour = 30000f;
-    private float _thirstDecreaseRatePerHour = 30000f;
-    private float _cleanDecreaseRatePerHour = 30000f;
-    private float _energyDecreaseRatePerHour = 30000f;
+    private float _hungerDecreaseRatePerHour = 20000f;
+    private float _thirstDecreaseRatePerHour = 20000f;
+    private float _cleanDecreaseRatePerHour = 20000f;
+    private float _energyDecreaseRatePerHour = 20000f;
 
     private const string HungerKey = "Hunger";
     private const string ThirstKey = "Thirst";
@@ -94,6 +94,7 @@ public class StatsManager : MonoBehaviour
 
     private void Start()
     {
+        petBehavior = GetComponent<PetBehavior>();
         stageAnimator = GetComponent<Animator>();
         UpdateLifeStage();
         // Load current life stage

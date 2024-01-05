@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using UnityEngine;
 
 public class PetBehavior : MonoBehaviour
 {
     public ConsoleMessages consoleMessages;
-    public enum PetMood { Happy, Normal, Angry, Sad, Bored }
+    public StatsManager statsManager;
+    public enum PetMood { Happy, Normal, Angry, Sad, Bored, Hungry, Sick }
     private PetMood currentMood = PetMood.Normal;
     private float lastAngryTime;
 
@@ -24,6 +26,91 @@ public class PetBehavior : MonoBehaviour
     public ActionAnimations actionAnimator;
     public EmotionAnimations emotionAnimator;
 
+    float currentHungerPercentage;
+    float currentThirstPercentage;
+    float currentCleanlinessPercentage;
+    float currentFunPercentage;
+    float currentEnergyPercentage;
+
+
+    private void Start()
+    {
+        //Grab the current status percentage from the stats manager
+        float currentHungerPercentage = statsManager.HungerPercent;
+        float currentFunPercentage = statsManager.FunPercent;
+        float currentThirstPercentage = statsManager.ThirstPercent;
+        float currentCleanlinessPercentage = statsManager.CleanlinessPercent;
+        float currentEnergyPercentage = statsManager.EnergyPercent;
+
+        /// HUNGER
+        if (currentHungerPercentage < 0.2f)
+        {
+            currentMood = PetMood.Hungry;
+        }
+        else
+        {
+            currentMood = PetMood.Normal;
+        }
+
+        // FUN
+        if (currentFunPercentage < 0.2f)
+        {
+            currentMood = PetMood.Bored;
+        }
+        else
+        {
+            currentMood = PetMood.Normal;
+        }
+    }
+
+    private void Update()
+    {
+        currentHungerPercentage = statsManager.HungerPercent;
+        currentFunPercentage = statsManager.FunPercent;
+
+        // Handle mood due to BOREDOM
+        if (currentFunPercentage < 0.2f)
+        {
+            if (currentMood != PetMood.Bored)
+            {
+                SetBoredMood();
+            }
+        }
+        else if (currentMood == PetMood.Bored) { ResetMood(); }
+
+        // Handle mood due to HUNGER
+        if (currentHungerPercentage < 0.5f)
+        {
+            if (currentMood != PetMood.Hungry)
+            {
+                SetHungryMood();
+            }
+        }
+        else if (currentMood == PetMood.Hungry) { ResetMood(); }
+
+        //Handle mood due to SICKNESS
+        if (statsManager.CurrentHealthStatus == StatsManager.HealthStatus.Sick)
+        {
+            if (currentMood != PetMood.Sick)
+            {
+                SetSickMood();
+            }
+        }
+        else if (currentMood == PetMood.Sick) { ResetMood(); }
+
+
+
+        // Handle mood due to anger
+        if (currentMood == PetMood.Angry && Time.time - lastAngryTime > FeedCooldown)
+        {
+            ResetMood();
+        }
+
+        // ... You might have other mood checks here
+    }
+
+
+
 
     // Call this method when the pet is fed
     public void RegisterFeed()
@@ -38,11 +125,9 @@ public class PetBehavior : MonoBehaviour
             rapidFeedAttempts++;
             if (rapidFeedAttempts > MaxFeedAttemptsBeforeAngry)
             {
-                currentMood = PetMood.Angry;
+                SetAngryMood();
                 lastAngryTime = Time.time; // Update the last time pet became angry
                 consoleMessages.ShowOverFeedingMessage();
-                Debug.Log("Pet has become angry due to overfeeding!");
-                emotionAnimator.AngryMood();
                 rapidFeedAttempts = 0; // Reset rapidFeedAttempts to avoid immediate re-triggering after cooldown
             }
         }
@@ -63,11 +148,9 @@ public class PetBehavior : MonoBehaviour
             rapidDrinkAttempts++;
             if (rapidDrinkAttempts > MaxDrinkAttemptsBeforeAngry)
             {
-                currentMood = PetMood.Angry;
+                SetAngryMood();
                 lastAngryTime = Time.time; // Update the last time pet became angry
-                Debug.Log("Pet has become angry due to overdrinking!");
                 consoleMessages.ShowOverDrinkingMessage();
-                emotionAnimator.AngryMood();
                 rapidDrinkAttempts = 0; // Reset rapidDrinkAttempts to avoid immediate re-triggering after cooldown
             }
         }
@@ -78,18 +161,45 @@ public class PetBehavior : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void SetSickMood()
     {
-        // If the pet has been angry and enough time has passed, reset the mood
-        if (currentMood == PetMood.Angry && Time.time - lastAngryTime > FeedCooldown)
+        currentMood = PetMood.Sick;
+        consoleMessages.ShowSickMessage();
+        emotionAnimator.SickMood();
+    }
+
+    private void SetAngryMood()
+    {
+        currentMood = PetMood.Angry;
+        emotionAnimator.AngryMood();
+    }
+
+    private void SetBoredMood()
+    {
+        currentMood = PetMood.Bored;
+        consoleMessages.ShowBoredMessage();
+        emotionAnimator.SadMood();
+
+    }
+    private void SetHungryMood()
+    {
+        currentMood = PetMood.Hungry;
+        consoleMessages.ShowHungryMessage();
+        emotionAnimator.CryMood();
+    }
+
+    private void ResetMood()
+    {
+        if (currentMood == PetMood.Angry)
         {
-            currentMood = PetMood.Normal;
             rapidFeedAttempts = 0;
             rapidDrinkAttempts = 0;
             consoleMessages.ShowNoLongerAngryMessage();
-            Debug.Log("Pet has calmed down and is no longer angry.");
-            // Trigger the Normal status animation
-            emotionAnimator.EmptyMood();
         }
+
+        currentMood = PetMood.Normal;
+        consoleMessages.ClearConsoleMessage();
+        emotionAnimator.EmptyMood();
     }
 }
+

@@ -36,6 +36,10 @@ public class ConsoleMessages : MonoBehaviour
     public void ShowSickNoEatMessage() { UpdateConsoleMessage("I'm sick and I don't want to eat!"); }
     public void ShowFullNoEatMessage() { UpdateConsoleMessage("I'm full and I don't want to eat!"); }
     public void ShowOverFeedingMessage() { UpdateConsoleMessage("Pet has become angry due to overfeeding!"); }
+    public void ShowHungryMessage()
+    {
+        UpdateConsoleMessage("I'm hungry!");
+    }
 
     // Thirst related messages:
     public void ShowAngryNoDrinkMessage() { UpdateConsoleMessage("I'm angry and I don't want to drink!"); }
@@ -50,16 +54,24 @@ public class ConsoleMessages : MonoBehaviour
     // Fun related messages:
     public void ShowAngryNoPlayMessage() { UpdateConsoleMessage("I'm angry and I don't want to play!"); }
     public void ShowFullNoPlayMessage() { UpdateConsoleMessage("I'm already having fun and I don't want to play anymore!"); }
+        public void ShowBoredMessage()
+    {
+        UpdateConsoleMessage("I'm bored!");
+    }
 
     // Health related messages:
     public void ShowFullNoMedicineMessage() { UpdateConsoleMessage("I'm healthy and I don't want to take medicine!"); ClearMessageAfterSeconds(4.0f); }
     public void ShowDirtyNoMedicineMessage() { UpdateConsoleMessage("I'm dirty and I don't want to take medicine!"); ClearMessageAfterSeconds(4.0f); }
     public void ShowSickNoPlayMessage() { UpdateConsoleMessage("I'm sick and I don't want to play!"); ClearMessageAfterSeconds(4.0f); }
+    public void ShowSickMessage()
+    {
+        UpdateConsoleMessage("I'm sick!");
+    }
 
     // Sleep related messages:
     public void ShowFullNoSleepMessage() { UpdateConsoleMessage("I'm not tired and I don't want to sleep!"); }
     public void ShowSickNoSleepMessage() { UpdateConsoleMessage("I'm sick and I don't want to sleep!"); }
-    
+
 
     public void ShowNoLongerAngryMessage()
     {
@@ -78,10 +90,6 @@ public class ConsoleMessages : MonoBehaviour
         UpdateConsoleMessage("I'm angry!");
     }
 
-    public void ShowHungerMessage()
-    {
-        UpdateConsoleMessage("I'm hungry!");
-    }
 
     public void ShowThirstMessage()
     {
@@ -93,10 +101,6 @@ public class ConsoleMessages : MonoBehaviour
         UpdateConsoleMessage("I'm dirty!");
     }
 
-    public void ShowFunMessage()
-    {
-        UpdateConsoleMessage("I'm bored!");
-    }
 
     public void ShowHappinessMessage()
     {
