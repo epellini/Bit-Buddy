@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PetBehavior : MonoBehaviour
 {
+    public ConsoleMessages consoleMessages;
     public enum PetMood { Happy, Normal, Angry, Sad, Bored }
     private PetMood currentMood = PetMood.Normal;
     private float lastAngryTime;
@@ -39,6 +40,7 @@ public class PetBehavior : MonoBehaviour
             {
                 currentMood = PetMood.Angry;
                 lastAngryTime = Time.time; // Update the last time pet became angry
+                consoleMessages.ShowOverFeedingMessage();
                 Debug.Log("Pet has become angry due to overfeeding!");
                 emotionAnimator.AngryMood();
                 rapidFeedAttempts = 0; // Reset rapidFeedAttempts to avoid immediate re-triggering after cooldown
@@ -83,6 +85,7 @@ public class PetBehavior : MonoBehaviour
             currentMood = PetMood.Normal;
             rapidFeedAttempts = 0;
             rapidDrinkAttempts = 0;
+            consoleMessages.ShowNoLongerAngryMessage();
             Debug.Log("Pet has calmed down and is no longer angry.");
             // Trigger the Normal status animation
             emotionAnimator.EmptyMood();

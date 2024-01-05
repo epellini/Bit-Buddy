@@ -6,6 +6,7 @@ public class PetActions : MonoBehaviour
 {
     public StatsManager statsManager;
     public PetBehavior petBehavior;
+    public ConsoleMessages consoleMessages;
 
     public void Feed()
     {
