@@ -1771,6 +1771,7 @@ MonoBehaviour:
   statsManager: {fileID: 827001114}
   petBehavior: {fileID: 827001111}
   consoleMessages: {fileID: 113832097}
+  emotionAnimator: {fileID: 1159956992}
 --- !u!95 &827001109
 Animator:
   serializedVersion: 5
@@ -1805,6 +1806,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   consoleMessages: {fileID: 113832097}
+  statsManager: {fileID: 827001114}
   actionAnimator: {fileID: 827001112}
   emotionAnimator: {fileID: 1159956992}
 --- !u!114 &827001112
@@ -1843,6 +1845,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a93167fec7059324b93573d6363f9f55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  petBehavior: {fileID: 827001111}
   eggController: {fileID: 9100000, guid: 52bd2bf0d49382d42a41d2e377f78ce3, type: 2}
   babyController: {fileID: 9100000, guid: 314fa1438e4b46540a030687d9b42c85, type: 2}
   adultController: {fileID: 9100000, guid: cb4ff02493e4cf94e9986f0fe8304dba, type: 2}
@@ -4253,6 +4256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a93167fec7059324b93573d6363f9f55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  petBehavior: {fileID: 0}
   eggController: {fileID: 9100000, guid: 52bd2bf0d49382d42a41d2e377f78ce3, type: 2}
   babyController: {fileID: 9100000, guid: 314fa1438e4b46540a030687d9b42c85, type: 2}
   adultController: {fileID: 9100000, guid: cb4ff02493e4cf94e9986f0fe8304dba, type: 2}

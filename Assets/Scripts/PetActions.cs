@@ -8,6 +8,8 @@ public class PetActions : MonoBehaviour
     public PetBehavior petBehavior;
     public ConsoleMessages consoleMessages;
 
+    public EmotionAnimations emotionAnimator;
+
     public void Feed()
     {
         // Check the pet's mood from PetBehavior
@@ -48,6 +50,7 @@ public class PetActions : MonoBehaviour
             //Debug.Log($"I'm angry and I don't want to DRINK!");
             //consoleMessages.ShowAngryNoDrinkMessage();
             petBehavior.RegisterDrink();
+            
             return;
         }
         if (statsManager.ThirstPercent > 0.92f)
