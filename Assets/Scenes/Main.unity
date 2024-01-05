@@ -1851,6 +1851,7 @@ MonoBehaviour:
   adultController: {fileID: 9100000, guid: cb4ff02493e4cf94e9986f0fe8304dba, type: 2}
   seniorController: {fileID: 9100000, guid: 2fe5fa2ff81446b4b89ee7a1a954006a, type: 2}
   deathController: {fileID: 9100000, guid: 559515bfb5d979b4ab2ca93a353883f3, type: 2}
+  emotionAnimator: {fileID: 1159956992}
   uiManager: {fileID: 1255652665}
 --- !u!1 &897496224
 GameObject:
@@ -2660,7 +2661,7 @@ RectTransform:
   m_GameObject: {fileID: 1159956991}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4, y: 4, z: 1}
+  m_LocalScale: {x: 3.5, y: 3.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -4262,6 +4263,7 @@ MonoBehaviour:
   adultController: {fileID: 9100000, guid: cb4ff02493e4cf94e9986f0fe8304dba, type: 2}
   seniorController: {fileID: 9100000, guid: 2fe5fa2ff81446b4b89ee7a1a954006a, type: 2}
   deathController: {fileID: 9100000, guid: 559515bfb5d979b4ab2ca93a353883f3, type: 2}
+  emotionAnimator: {fileID: 0}
   uiManager: {fileID: 0}
 --- !u!95 &1922976612
 Animator:

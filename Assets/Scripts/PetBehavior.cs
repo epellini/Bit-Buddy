@@ -30,7 +30,6 @@ public class PetBehavior : MonoBehaviour
     float currentHungerPercentage;
     float currentHappinessPercentage;
 
-
     float currentThirstPercentage;
     float currentCleanlinessPercentage;
     float currentFunPercentage;
@@ -74,35 +73,45 @@ public class PetBehavior : MonoBehaviour
         }
     }
 
+    private float lastHappinessPercentage = -1; // Initialize to a value that won't match any state
+    private bool isWaiting = false; // Flag to check if currently waiting
+
     public void UpdateHappiness()
     {
-        GetHappiness();
+        if (currentHappinessPercentage != lastHappinessPercentage && !isWaiting)
+        {
+            StartCoroutine(ChangeMoodWithDelay());
+        }
+    }
+
+    private IEnumerator ChangeMoodWithDelay()
+    {
+        isWaiting = true; // Set the flag to true as we are starting the wait
+
         if (currentHappinessPercentage <= 0.2f)
         {
             emotionAnimator.CryMood();
-            return;
         }
         else if (currentHappinessPercentage <= 0.4f)
         {
 
             emotionAnimator.SadMood();
-            return;
         }
         else if (currentHappinessPercentage <= 0.6f)
         {
             emotionAnimator.ContentMood();
-            return;
         }
         else if (currentHappinessPercentage <= 0.8f)
         {
             emotionAnimator.HappyMood();
-            return;
         }
         else // currentHappinessPercentage > 0.8f
         {
             emotionAnimator.VeryHappyMood();
-            return;
         }
+        yield return new WaitForSeconds(2); // Wait for 2 seconds
+        lastHappinessPercentage = currentHappinessPercentage; // Update the last happiness percentage
+        isWaiting = false; // Reset the flag as waiting is over
     }
 
     private void Update()
@@ -237,7 +246,7 @@ public class PetBehavior : MonoBehaviour
             consoleMessages.ShowNoLongerAngryMessage();
         }
     }
-
+    
     private void ResetMood()
     {
         currentMood = PetMood.Normal;

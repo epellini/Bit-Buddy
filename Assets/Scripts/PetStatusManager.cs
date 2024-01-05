@@ -21,9 +21,9 @@ public class StatsManager : MonoBehaviour
 
     // // Time requirements for each stage
     private readonly TimeSpan eggTimeRequirement = TimeSpan.FromSeconds(5);
-    private readonly TimeSpan babyTimeRequirement = TimeSpan.FromSeconds(15);
-    private readonly TimeSpan adultTimeRequirement = TimeSpan.FromSeconds(25);
-    private readonly TimeSpan seniorTimeRequirement = TimeSpan.FromSeconds(35);
+    private readonly TimeSpan babyTimeRequirement = TimeSpan.FromMinutes(15);
+    private readonly TimeSpan adultTimeRequirement = TimeSpan.FromMinutes(25);
+    private readonly TimeSpan seniorTimeRequirement = TimeSpan.FromMinutes(35);
 
 
     private float _hungerDecreaseRatePerHour = 20000f;
@@ -82,6 +82,7 @@ public class StatsManager : MonoBehaviour
     private DateTime _lastUpdateTime;
     private DateTime _petBirthTime;
     private TimeSpan _currentPetAge;
+    public EmotionAnimations emotionAnimator;
 
     // Provide public access to the DateTime and TimeSpan variables
     // public DateTime LastUpdateTime => _lastUpdateTime;
@@ -287,10 +288,11 @@ public class StatsManager : MonoBehaviour
         }
 
             // Handle player death or any other relevant logic.
-        if (!_hasPlayerDied && _currentHunger <= 0 && _currentThirst <= 0 && _currentCleanliness <= 0)
+        if (!_hasPlayerDied && _lowHappinessDuration >= 0.0200f)
         {
             uiManager.GameOver();
             _hasPlayerDied = true;
+            emotionAnimator.EmptyMood();
             CurrentLifeStage = LifeStage.Death;
             stageAnimator.enabled = false;
             OnPlayerDeath?.Invoke();
