@@ -14,7 +14,8 @@ public class PetActions : MonoBehaviour
         if (petBehavior.CurrentMood == PetBehavior.PetMood.Angry)
         {
             // Show visually that the pet does not want to eat bc it's angry
-            Debug.Log($"I'm angry and I don't want to eat!");
+            //Debug.Log($"I'm angry and I don't want to eat!");
+            //consoleMessages.ShowAngryNoEatMessage();
             petBehavior.RegisterFeed();
             return;
         }
@@ -22,6 +23,7 @@ public class PetActions : MonoBehaviour
         {
             // Show visually that the pet does not want to eat bc it's sick
             Debug.Log($"I'm sick and I don't want to eat!");
+            consoleMessages.ShowSickNoEatMessage();
             petBehavior.RegisterFeed();
             return;
         }
@@ -29,6 +31,7 @@ public class PetActions : MonoBehaviour
         {
             // Show visually that the pet does not want to eat bc it's full
             Debug.Log($"I'm full and I don't want to eat!");
+            consoleMessages.ShowFullNoEatMessage();
             petBehavior.RegisterFeed();
             return;
         }
@@ -42,7 +45,8 @@ public class PetActions : MonoBehaviour
         if (petBehavior.CurrentMood == PetBehavior.PetMood.Angry)
         {
             // Show visually that the pet does not want to drink bc it's angry
-            Debug.Log($"I'm angry and I don't want to DRINK!");
+            //Debug.Log($"I'm angry and I don't want to DRINK!");
+            //consoleMessages.ShowAngryNoDrinkMessage();
             petBehavior.RegisterDrink();
             return;
         }
@@ -50,6 +54,7 @@ public class PetActions : MonoBehaviour
         {
             // Show visually that the pet does not want to drink bc it's full
             Debug.Log($"I'm full and I don't want to drink!");
+            consoleMessages.ShowFullNoDrinkMessage();
             petBehavior.RegisterDrink();
             return;
         }
@@ -64,15 +69,16 @@ public class PetActions : MonoBehaviour
         {
             // Show visually that the pet does not want to sleep bc it's sick
             Debug.Log("I'm sick and I don't want to sleep");
+            consoleMessages.ShowSickNoSleepMessage();
             return;
         }
         if (statsManager.EnergyPercent > 0.7f)
         {
             // Show visually that the pet does not want to sleep bc it's full
             Debug.Log("I'm full of energy and I don't want to sleep!");
+            consoleMessages.ShowFullNoSleepMessage();
             return;
         }
-
         float sleepAmountToIncrease = 100f;
         statsManager.IncreaseEnergy(sleepAmountToIncrease);
     }
@@ -83,6 +89,7 @@ public class PetActions : MonoBehaviour
         {
             // Show visually that the pet does not want to bathe bc he already clean
             Debug.Log("I'm full of fun and I don't want to BATHE!");
+            consoleMessages.ShowFullNoCleanMessage();
             return;
         }
 
@@ -100,12 +107,14 @@ public class PetActions : MonoBehaviour
         {
             // Show visually that the pet does not want to play because it's sick
             Debug.Log("I'm sick and I don't want to play");
+            consoleMessages.ShowSickNoPlayMessage();
             return;
         }
         if (statsManager.FunPercent > 0.97f)
         {
             // Show visually that the pet does not want to play because it's already having too much fun
             Debug.Log("I'm full of fun and I don't want to play!");
+            consoleMessages.ShowFullNoPlayMessage();
             return;
         }
 
@@ -128,6 +137,7 @@ public class PetActions : MonoBehaviour
         {
             // Show visually that the pet is healthy and does not want to heal
             Debug.Log("I'm healthy and I don't want to heal");
+            consoleMessages.ShowFullNoMedicineMessage();
             return;
         }
 
@@ -138,12 +148,14 @@ public class PetActions : MonoBehaviour
             if (statsManager.CleanlinessPercent < 0.15f)
             {
                 // Show visually that the pet is dirty and wants to be cleaned before healed
+                consoleMessages.ShowDirtyNoMedicineMessage();
                 Debug.Log("I'm dirty, I want a bath before healing");
                 return;
             }
 
             // If the pet is sick and not too dirty, heal the pet
             Debug.Log("Just got healed!");
+            consoleMessages.ShowNoLongerSickMessage();
             float funAmountToDecrease = 40f;
             statsManager.DecreaseFun(funAmountToDecrease);
             statsManager.HealPet();

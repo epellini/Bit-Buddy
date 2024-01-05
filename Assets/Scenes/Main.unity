@@ -291,8 +291,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -4.44}
-  m_SizeDelta: {x: 432.09143, y: 87.44415}
+  m_AnchoredPosition: {x: 0.20149, y: -2.8549094}
+  m_SizeDelta: {x: 428.32666, y: 102.07579}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &71358900
 MonoBehaviour:
@@ -314,7 +314,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: STATUS MESSAGE GOES HERE
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f4269832b1f88b9469ffda76495d8487, type: 2}
   m_sharedMaterial: {fileID: -8352941286120338847, guid: f4269832b1f88b9469ffda76495d8487, type: 2}
@@ -341,15 +341,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15
-  m_fontSizeBase: 15
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -377,7 +377,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -1.4057312, y: 0, z: 0.3271255, w: 0.5982208}
+  m_margin: {x: -1.4057312, y: -10.809486, z: 0.3271255, w: 14.821259}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -402,6 +402,7 @@ GameObject:
   - component: {fileID: 113832094}
   - component: {fileID: 113832096}
   - component: {fileID: 113832095}
+  - component: {fileID: 113832097}
   m_Layer: 5
   m_Name: Console
   m_TagString: Untagged
@@ -467,6 +468,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 113832093}
   m_CullTransparentMesh: 1
+--- !u!114 &113832097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113832093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffccbd1fb9475164e8d08578a35056be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  consoleText: {fileID: 71358900}
 --- !u!1 &120155002
 GameObject:
   m_ObjectHideFlags: 0
@@ -1756,6 +1770,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statsManager: {fileID: 827001114}
   petBehavior: {fileID: 827001111}
+  consoleMessages: {fileID: 113832097}
 --- !u!95 &827001109
 Animator:
   serializedVersion: 5
@@ -1789,6 +1804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f30f8edc4eebada459a1daca4c0fbd12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  consoleMessages: {fileID: 113832097}
   actionAnimator: {fileID: 827001112}
   emotionAnimator: {fileID: 1159956992}
 --- !u!114 &827001112

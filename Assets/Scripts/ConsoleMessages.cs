@@ -29,15 +29,48 @@ public class ConsoleMessages : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Console Messages
-    /// </summary>
+    // ClearMessageAfterSeconds(3.0f); // This will clear the message after 3 seconds
 
-    public void ShowNoLongerAngryMessage() { UpdateConsoleMessage("Pet has calmed down and is no longer angry."); }
-    public void ShowOverFeedingMessage()
+    // Hunger related messages:
+    public void ShowAngryNoEatMessage() { UpdateConsoleMessage("I'm angry and I don't want to eat!"); }
+    public void ShowSickNoEatMessage() { UpdateConsoleMessage("I'm sick and I don't want to eat!"); }
+    public void ShowFullNoEatMessage() { UpdateConsoleMessage("I'm full and I don't want to eat!"); }
+    public void ShowOverFeedingMessage() { UpdateConsoleMessage("Pet has become angry due to overfeeding!"); }
+
+    // Thirst related messages:
+    public void ShowAngryNoDrinkMessage() { UpdateConsoleMessage("I'm angry and I don't want to drink!"); }
+    public void ShowSickNoDrinkMessage() { UpdateConsoleMessage("I'm sick and I don't want to drink!"); }
+    public void ShowFullNoDrinkMessage() { UpdateConsoleMessage("I'm not thirsty and I don't want to drink!"); }
+    public void ShowOverDrinkingMessage() { UpdateConsoleMessage("Pet has become angry due to overdrinking!"); }
+
+    // Cleanliness related messages:
+    public void ShowAngryNoCleanMessage() { UpdateConsoleMessage("I'm angry and I don't want to be cleaned!"); }
+    public void ShowFullNoCleanMessage() { UpdateConsoleMessage("I'm clean and I don't want to be take a bath!"); }
+
+    // Fun related messages:
+    public void ShowAngryNoPlayMessage() { UpdateConsoleMessage("I'm angry and I don't want to play!"); }
+    public void ShowFullNoPlayMessage() { UpdateConsoleMessage("I'm already having fun and I don't want to play anymore!"); }
+
+    // Health related messages:
+    public void ShowFullNoMedicineMessage() { UpdateConsoleMessage("I'm healthy and I don't want to take medicine!"); ClearMessageAfterSeconds(4.0f); }
+    public void ShowDirtyNoMedicineMessage() { UpdateConsoleMessage("I'm dirty and I don't want to take medicine!"); ClearMessageAfterSeconds(4.0f); }
+    public void ShowSickNoPlayMessage() { UpdateConsoleMessage("I'm sick and I don't want to play!"); ClearMessageAfterSeconds(4.0f); }
+
+    // Sleep related messages:
+    public void ShowFullNoSleepMessage() { UpdateConsoleMessage("I'm not tired and I don't want to sleep!"); }
+    public void ShowSickNoSleepMessage() { UpdateConsoleMessage("I'm sick and I don't want to sleep!"); }
+    
+
+    public void ShowNoLongerAngryMessage()
     {
-        UpdateConsoleMessage("Pet has become angry due to overfeeding!");
-        // ClearMessageAfterSeconds(3.0f); // This will clear the message after 3 seconds
+        UpdateConsoleMessage("Pet has calmed down and is no longer angry.");
+        ClearMessageAfterSeconds(5.0f);
+    }
+
+    public void ShowNoLongerSickMessage()
+    {
+        UpdateConsoleMessage("Pet has recovered and is no longer sick.");
+        ClearMessageAfterSeconds(5.0f);
     }
 
     public void ShowAngryMessage()

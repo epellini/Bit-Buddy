@@ -66,6 +66,7 @@ public class PetBehavior : MonoBehaviour
                 currentMood = PetMood.Angry;
                 lastAngryTime = Time.time; // Update the last time pet became angry
                 Debug.Log("Pet has become angry due to overdrinking!");
+                consoleMessages.ShowOverDrinkingMessage();
                 emotionAnimator.AngryMood();
                 rapidDrinkAttempts = 0; // Reset rapidDrinkAttempts to avoid immediate re-triggering after cooldown
             }
