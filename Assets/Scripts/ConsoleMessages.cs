@@ -32,103 +32,61 @@ public class ConsoleMessages : MonoBehaviour
     // ClearMessageAfterSeconds(3.0f); // This will clear the message after 3 seconds
 
     // Hunger related messages:
-    public void ShowAngryNoEatMessage() { UpdateConsoleMessage("I'm angry and I don't want to eat!"); }
-    public void ShowSickNoEatMessage() { UpdateConsoleMessage("I'm sick and I don't want to eat!"); }
-    public void ShowFullNoEatMessage() { UpdateConsoleMessage("I'm full and I don't want to eat!"); }
-    public void ShowOverFeedingMessage() { UpdateConsoleMessage("Pet has become angry due to overfeeding!"); }
-    public void ShowHungryMessage()
-    {
-        UpdateConsoleMessage("I'm hungry!");
-    }
+public void ShowAngryNoEatMessage() { UpdateConsoleMessage("Grrr! Not in the mood for snacks!"); }
+public void ShowSickNoEatMessage() { UpdateConsoleMessage("Ugh, my tummy's rumbling in a bad way... No food, please!"); }
+public void ShowFullNoEatMessage() { UpdateConsoleMessage("No more, please! I'm stuffed!"); }
+public void ShowOverFeedingMessage() { UpdateConsoleMessage("I'm feeling grumpy from too much food!"); }
+public void ShowHungryMessage() { UpdateConsoleMessage("My belly's rumbling... It's snack time!"); }
 
-    // Thirst related messages:
-    public void ShowAngryNoDrinkMessage() { UpdateConsoleMessage("I'm angry and I don't want to drink!"); ClearMessageAfterSeconds(4.0f); }
-    public void ShowSickNoDrinkMessage() { UpdateConsoleMessage("I'm sick and I don't want to drink!"); ClearMessageAfterSeconds(4.0f); }
-    public void ShowFullNoDrinkMessage() { UpdateConsoleMessage("I'm not thirsty and I don't want to drink!"); ClearMessageAfterSeconds(4.0f); }
-    public void ShowOverDrinkingMessage() { UpdateConsoleMessage("Pet has become angry due to overdrinking!"); ClearMessageAfterSeconds(4.0f); }
+// Thirst related messages:
+public void ShowAngryNoDrinkMessage() { UpdateConsoleMessage("Drink? Nope, not now."); ClearMessageAfterSeconds(4.0f); }
+public void ShowSickNoDrinkMessage() { UpdateConsoleMessage("No drinks for me, feeling under the weather!"); ClearMessageAfterSeconds(4.0f); }
+public void ShowFullNoDrinkMessage() { UpdateConsoleMessage("No thanks, I'm not thirsty right now!"); ClearMessageAfterSeconds(4.0f); }
+public void ShowOverDrinkingMessage() { UpdateConsoleMessage("Too much water makes me a soggy pet!"); ClearMessageAfterSeconds(4.0f); }
+public void ShowThirstyMessage() { UpdateConsoleMessage("Water, please! I'm parched!"); }
 
-        public void ShowThirstyMessage()
-    {
-        UpdateConsoleMessage("I'm thirsty!");
-    }
+// Cleanliness related messages:
+public void ShowAngryNoCleanMessage() { UpdateConsoleMessage("No baths, please! I'm not in the mood!"); }
+public void ShowFullNoCleanMessage() { UpdateConsoleMessage("I'm squeaky clean! No baths needed!"); }
+public void ShowDirtyMessage() { UpdateConsoleMessage("I'm feeling grubby, time for a bath!"); }
 
-    // Cleanliness related messages:
-    public void ShowAngryNoCleanMessage() { UpdateConsoleMessage("I'm angry and I don't want to be cleaned!"); }
-    public void ShowFullNoCleanMessage() { UpdateConsoleMessage("I'm clean and I don't want to be take a bath!"); }
-    public void ShowDirtyMessage()
-    {
-        UpdateConsoleMessage("I'm dirty!");
-    }
+// Fun related messages:
+public void ShowAngryNoPlayMessage() { UpdateConsoleMessage("Playtime? No thanks, I'm not feeling it!"); }
+public void ShowFullNoPlayMessage() { UpdateConsoleMessage("I'm all played out! Let's rest for now!"); }
+public void ShowBoredMessage() { UpdateConsoleMessage("So bored! Let's do something fun!"); }
 
-    // Fun related messages:
-    public void ShowAngryNoPlayMessage() { UpdateConsoleMessage("I'm angry and I don't want to play!"); }
-    public void ShowFullNoPlayMessage() { UpdateConsoleMessage("I'm already having fun and I don't want to play anymore!"); }
-        public void ShowBoredMessage()
-    {
-        UpdateConsoleMessage("I'm bored!");
-    }
+// Health related messages:
+public void ShowFullNoMedicineMessage() { UpdateConsoleMessage("Feeling top-notch! No meds needed!"); ClearMessageAfterSeconds(4.0f); }
+public void ShowDirtyNoMedicineMessage() { UpdateConsoleMessage("Eek, I'm too icky for medicine!"); ClearMessageAfterSeconds(4.0f); }
+public void ShowSickNoPlayMessage() { UpdateConsoleMessage("Not up for play, I'm feeling icky!"); ClearMessageAfterSeconds(4.0f); }
+public void ShowSickMessage() { UpdateConsoleMessage("I don't feel so good..."); }
 
-    // Health related messages:
-    public void ShowFullNoMedicineMessage() { UpdateConsoleMessage("I'm healthy and I don't want to take medicine!"); ClearMessageAfterSeconds(4.0f); }
-    public void ShowDirtyNoMedicineMessage() { UpdateConsoleMessage("I'm dirty and I don't want to take medicine!"); ClearMessageAfterSeconds(4.0f); }
-    public void ShowSickNoPlayMessage() { UpdateConsoleMessage("I'm sick and I don't want to play!"); ClearMessageAfterSeconds(4.0f); }
-    public void ShowSickMessage()
-    {
-        UpdateConsoleMessage("I'm sick!");
-    }
+// Sleep related messages:
+public void ShowFullNoSleepMessage() { UpdateConsoleMessage("Who needs sleep? I'm full of energy!"); ClearMessageAfterSeconds(4.0f); }
+public void ShowSickNoSleepMessage() { UpdateConsoleMessage("Too sniffly for sleep right now."); ClearMessageAfterSeconds(4.0f); }
+public void ShowTiredMessage() { UpdateConsoleMessage("Yawn! I'm ready for some dream time!"); }
 
-    // Sleep related messages:
-    public void ShowFullNoSleepMessage() { UpdateConsoleMessage("I'm not tired and I don't want to sleep!"); ClearMessageAfterSeconds(4.0f); }
-    public void ShowSickNoSleepMessage() { UpdateConsoleMessage("I'm sick and I don't want to sleep!"); ClearMessageAfterSeconds(4.0f); }
-        public void ShowTiredMessage()
-    {
-        UpdateConsoleMessage("I'm tired!");
-    }
+public void ShowNoLongerTiredMessage() { UpdateConsoleMessage("All rested up! Ready for adventure!"); ClearMessageAfterSeconds(4.0f); }
+public void ShowNoLongerDirtyMessage() { UpdateConsoleMessage("Look at me! I'm sparkling clean!"); ClearMessageAfterSeconds(4.0f); }
+public void ShowNoLongerAngryMessage() { UpdateConsoleMessage("Phew! I'm back to my happy self!"); ClearMessageAfterSeconds(4.0f); }
+public void ShowNoLongerSickMessage() { UpdateConsoleMessage("Hooray! I'm feeling tip-top again!"); ClearMessageAfterSeconds(4.0f); }
 
-    public void ShowNoLongerTiredMessage()
-    {
-        UpdateConsoleMessage("Pet has recovered and is no longer tired.");
-        ClearMessageAfterSeconds(4.0f);
-    }
+public void ShowAngryMessage() { UpdateConsoleMessage("I'm in a huff! Better watch out!"); }
+public void ShowHappinessMessage() { UpdateConsoleMessage("Feeling blue... Could use some cheering up!"); }
 
-    public void ShowNoLongerDirtyMessage()
-    {
-        UpdateConsoleMessage("Pet has recovered and is no longer dirty.");
-        ClearMessageAfterSeconds(4.0f);
-    }
 
-    public void ShowNoLongerAngryMessage()
+public void ClearConsoleMessage()
+{
+    if (consoleText != null)
     {
-        UpdateConsoleMessage("Pet has calmed down and is no longer angry.");
-        ClearMessageAfterSeconds(4.0f);
+        consoleText.text = "";
     }
+    else
+    {
+        Debug.Log("Console Text is null");
+    }
+}
 
-    public void ShowNoLongerSickMessage()
-    {
-        UpdateConsoleMessage("Pet has recovered and is no longer sick.");
-        ClearMessageAfterSeconds(4.0f);
-    }
-
-    public void ShowAngryMessage()
-    {
-        UpdateConsoleMessage("I'm angry!");
-    }
-
-    public void ShowHappinessMessage()
-    {
-        UpdateConsoleMessage("I'm sad!");
-    }
-
-    public void ClearConsoleMessage()
-    {
-        if (consoleText != null)
-        {
-            consoleText.text = "";
-        }
-        else
-        {
-            Debug.Log("Console Text is null");
-        }
-    }
+    
 
 }

@@ -91,8 +91,6 @@ public class StatsManager : MonoBehaviour
 
     public UIManager uiManager;
 
-
-
     private void Start()
     {
         petBehavior = GetComponent<PetBehavior>();
@@ -288,11 +286,11 @@ public class StatsManager : MonoBehaviour
         }
 
             // Handle player death or any other relevant logic.
-        if (!_hasPlayerDied && _lowHappinessDuration >= 0.0200f)
+        if (!_hasPlayerDied && _lowHappinessDuration >= 0.0070f)
         {
+            emotionAnimator.enabled = false;            
             uiManager.GameOver();
             _hasPlayerDied = true;
-            emotionAnimator.EmptyMood();
             CurrentLifeStage = LifeStage.Death;
             stageAnimator.enabled = false;
             OnPlayerDeath?.Invoke();
@@ -305,8 +303,6 @@ public class StatsManager : MonoBehaviour
         // Reset UI Elements
         uiManager.StartGame();
         //uiMnanager.UpdateStageText(GetFormattedStage());
-
-
         _currentHunger = _maxHunger;
         _currentThirst = _maxThirst;
         _currentCleanliness = _maxCleanliness;
@@ -319,6 +315,8 @@ public class StatsManager : MonoBehaviour
         _petBirthTime = DateTime.Now;
         _currentPetAge = TimeSpan.Zero;
         CurrentLifeStage = LifeStage.Egg;
+        emotionAnimator.enabled = true;
+        emotionAnimator.VeryHappyMood();
         petBehavior.ResetDeath();
         stageAnimator.enabled = true;
         _hasPlayerDied = false;
@@ -334,7 +332,7 @@ public class StatsManager : MonoBehaviour
     private void UpdateHealthStatus()
     {
         // Check if the happiness is below the threshold
-        if (HappinessPercent < 0.5f) // 20%
+        if (HappinessPercent < 0.9f) // 20%
         {
             // Increase the duration of low happiness
             _lowHappinessDuration += Time.deltaTime / 3600f; // Convert seconds to hours
