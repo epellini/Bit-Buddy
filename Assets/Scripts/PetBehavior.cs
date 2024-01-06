@@ -8,7 +8,7 @@ public class PetBehavior : MonoBehaviour
 {
     public ConsoleMessages consoleMessages;
     public StatsManager statsManager;
-    public enum PetMood { Happy, Content, Normal, Angry, Sad, Bored, Hungry, Sick }
+    public enum PetMood { Happy, Content, Normal, Angry, Sad, Bored, Hungry, Sick, Thirsty, Dirty, Tired }
     private PetMood currentMood = PetMood.Normal;
     private float lastAngryTime;
 
@@ -29,10 +29,9 @@ public class PetBehavior : MonoBehaviour
 
     float currentHungerPercentage;
     float currentHappinessPercentage;
-
     float currentThirstPercentage;
-    float currentCleanlinessPercentage;
     float currentFunPercentage;
+    float currentCleanlinessPercentage;
     float currentEnergyPercentage;
 
     private void GetHappiness()
@@ -45,15 +44,34 @@ public class PetBehavior : MonoBehaviour
         GetHappiness();
         //Grab the current status percentage from the stats manager
         currentHungerPercentage = statsManager.HungerPercent;
-
         currentFunPercentage = statsManager.FunPercent;
         currentThirstPercentage = statsManager.ThirstPercent;
         currentCleanlinessPercentage = statsManager.CleanlinessPercent;
         currentEnergyPercentage = statsManager.EnergyPercent;
         UpdateHappiness();
 
+        //Energy
+        if (currentEnergyPercentage < 0.1f)
+        {
+            currentMood = PetMood.Tired;
+        }
+        else
+        {
+            currentMood = PetMood.Normal;
+        }
+
+        //Cleanliness
+        if (currentCleanlinessPercentage < 0.15f)
+        {
+            currentMood = PetMood.Dirty;
+        }
+        else
+        {
+            currentMood = PetMood.Normal;
+        }
+
         /// HUNGER
-        if (currentHungerPercentage < 0.2f)
+        if (currentHungerPercentage < 0.3f)
         {
             currentMood = PetMood.Hungry;
         }
@@ -66,6 +84,16 @@ public class PetBehavior : MonoBehaviour
         if (currentFunPercentage < 0.2f)
         {
             currentMood = PetMood.Bored;
+        }
+        else
+        {
+            currentMood = PetMood.Normal;
+        }
+
+        // THIRST
+        if (currentThirstPercentage < 0.4f)
+        {
+            currentMood = PetMood.Thirsty;
         }
         else
         {
@@ -94,7 +122,6 @@ public class PetBehavior : MonoBehaviour
         }
         else if (currentHappinessPercentage <= 0.4f)
         {
-
             emotionAnimator.SadMood();
         }
         else if (currentHappinessPercentage <= 0.6f)
@@ -117,10 +144,43 @@ public class PetBehavior : MonoBehaviour
     private void Update()
     {
         currentHungerPercentage = statsManager.HungerPercent;
-        //currentHappinessPercentage = statsManager.HappinessPercent;
         currentFunPercentage = statsManager.FunPercent;
+        currentThirstPercentage = statsManager.ThirstPercent;
+        currentCleanlinessPercentage = statsManager.CleanlinessPercent;
+        currentEnergyPercentage = statsManager.EnergyPercent;
+
         GetHappiness();
         UpdateHappiness();
+
+        //handle mood due to ENERGY
+        if (currentEnergyPercentage < 0.1f)
+        {
+            if (currentMood != PetMood.Tired)
+            {
+                SetTiredMood();
+            }
+        }
+        else if (currentMood == PetMood.Tired) { ResetTiredMood(); }
+
+        //Handle mood due to CLEANLINESS
+        if (currentCleanlinessPercentage < 0.15f)
+        {
+            if (currentMood != PetMood.Dirty)
+            {
+                SetDirtyMood();
+            }
+        }
+        else if (currentMood == PetMood.Dirty) { ResetDirtyMood(); }
+
+        // Handle mood due to THIRST
+        if (currentThirstPercentage < 0.3f)
+        {
+            if (currentMood != PetMood.Thirsty)
+            {
+                SetThirstyMood();
+            }
+        }
+        else if (currentMood == PetMood.Thirsty) { ResetMood(); }
 
         // Handle mood due to BOREDOM
         if (currentFunPercentage < 0.2f)
@@ -150,7 +210,7 @@ public class PetBehavior : MonoBehaviour
                 SetSickMood();
             }
         }
-        else if (currentMood == PetMood.Sick) { ResetMood(); }
+        else if (currentMood == PetMood.Sick) { ResetSick(); }
 
         // Handle mood due to anger
         if (currentMood == PetMood.Angry && Time.time - lastAngryTime > FeedCooldown)
@@ -212,17 +272,39 @@ public class PetBehavior : MonoBehaviour
         }
     }
 
-
+    private void SetTiredMood()
+    {
+        currentMood = PetMood.Tired;
+        consoleMessages.ShowTiredMessage();
+    }
     private void SetSickMood()
     {
         currentMood = PetMood.Sick;
         consoleMessages.ShowSickMessage();
         // add the button flashing here too
     }
+    public void ResetSick()
+    {
+        consoleMessages.ClearConsoleMessage();
+    }
 
     private void SetAngryMood()
     {
         currentMood = PetMood.Angry;
+    }
+
+    private void SetDirtyMood()
+    {
+        currentMood = PetMood.Dirty;
+        consoleMessages.ShowDirtyMessage();
+    }
+
+    private void ResetDirtyMood()
+    {
+        if (currentMood == PetMood.Dirty)
+        {
+            consoleMessages.ShowNoLongerDirtyMessage();
+        }
     }
 
     private void SetBoredMood()
@@ -237,6 +319,20 @@ public class PetBehavior : MonoBehaviour
         consoleMessages.ShowHungryMessage();
     }
 
+    private void SetThirstyMood()
+    {
+        currentMood = PetMood.Thirsty;
+        consoleMessages.ShowThirstyMessage();
+    }
+
+    private void ResetTiredMood()
+    {
+        if (currentMood == PetMood.Tired)
+        {
+            consoleMessages.ShowNoLongerTiredMessage();
+        }
+    }
+
     private void ResetAngryMood()
     {
         if (currentMood == PetMood.Angry)
@@ -246,12 +342,17 @@ public class PetBehavior : MonoBehaviour
             consoleMessages.ShowNoLongerAngryMessage();
         }
     }
-    
+
     private void ResetMood()
     {
         currentMood = PetMood.Normal;
         consoleMessages.ClearConsoleMessage();
-        emotionAnimator.EmptyMood();
+    }
+
+    public void ResetDeath()
+    {
+        currentMood = PetMood.Normal;
+        consoleMessages.ClearConsoleMessage();
     }
 }
 

@@ -15,7 +15,6 @@ public class EmotionAnimations : MonoBehaviour
     public void NormalMood() { emotionAnimator.SetTrigger("NormalTrigger"); }
     public void SadMood() { emotionAnimator.SetTrigger("SadTrigger"); }
     public void HappyMood() { emotionAnimator.SetTrigger("HappyTrigger"); }
-    public void SickMood() { emotionAnimator.SetTrigger("SickTrigger"); }
     public void ContentMood() { emotionAnimator.SetTrigger("ContentTrigger"); }
     public void CoolMood() { emotionAnimator.SetTrigger("CoolTrigger"); }
     public void CryMood() { emotionAnimator.SetTrigger("CryTrigger"); }

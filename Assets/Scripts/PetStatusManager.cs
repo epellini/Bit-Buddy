@@ -299,6 +299,7 @@ public class StatsManager : MonoBehaviour
         }
     }
 
+
     public void ResetPet()
     {
         // Reset UI Elements
@@ -318,6 +319,7 @@ public class StatsManager : MonoBehaviour
         _petBirthTime = DateTime.Now;
         _currentPetAge = TimeSpan.Zero;
         CurrentLifeStage = LifeStage.Egg;
+        petBehavior.ResetDeath();
         stageAnimator.enabled = true;
         _hasPlayerDied = false;
 
@@ -327,6 +329,7 @@ public class StatsManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    public HealButtonEffect healButtonEffect;
 
     private void UpdateHealthStatus()
     {
@@ -343,15 +346,17 @@ public class StatsManager : MonoBehaviour
         }
 
         // Check if the pet has been unhappy for 12 hours or more
-        if (_lowHappinessDuration >= 0.0100f) // 5 minutes currently.
+        if (_lowHappinessDuration >= 0.0050f) // 5 minutes currently.
         {
             // Change the health status to sick
             _currentHealthStatus = HealthStatus.Sick;
+            healButtonEffect.ButtonSick();
         }
         else
         {
             // Otherwise, ensure the health status is healthy
             _currentHealthStatus = HealthStatus.Healthy;
+            healButtonEffect.ButtonHealthy();
         }
     }
 
