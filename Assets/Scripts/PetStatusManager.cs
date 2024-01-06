@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class StatsManager : MonoBehaviour
 {
@@ -20,16 +22,16 @@ public class StatsManager : MonoBehaviour
     public LifeStage CurrentLifeStage { get; private set; } = LifeStage.Egg;
 
     // // Time requirements for each stage
-    private readonly TimeSpan eggTimeRequirement = TimeSpan.FromSeconds(5);
-    private readonly TimeSpan babyTimeRequirement = TimeSpan.FromMinutes(15);
-    private readonly TimeSpan adultTimeRequirement = TimeSpan.FromMinutes(25);
-    private readonly TimeSpan seniorTimeRequirement = TimeSpan.FromMinutes(35);
+    private readonly TimeSpan eggTimeRequirement = TimeSpan.FromSeconds(25);
+    private readonly TimeSpan babyTimeRequirement = TimeSpan.FromDays(3);
+    private readonly TimeSpan adultTimeRequirement = TimeSpan.FromDays(25);
+    private readonly TimeSpan seniorTimeRequirement = TimeSpan.FromDays(35);
 
-
-    private float _hungerDecreaseRatePerHour = 20000f;
-    private float _thirstDecreaseRatePerHour = 20000f;
-    private float _cleanDecreaseRatePerHour = 20000f;
-    private float _energyDecreaseRatePerHour = 20000f;
+    private float _hungerDecreaseRatePerHour = 16.67f; // 6 hours to reach 0
+    private float _thirstDecreaseRatePerHour = 25f; // 4 hours to reach 0
+    private float _cleanDecreaseRatePerHour = 11.11f; // 9 hours to reach 0
+    private float _energyDecreaseRatePerHour = 8.33f; // 12 hours to reach 0
+    private float _funDecreaseRatePerHour = 28.57f; // 3.5 hours to reach 0
 
     private const string HungerKey = "Hunger";
     private const string ThirstKey = "Thirst";
@@ -233,7 +235,7 @@ public class StatsManager : MonoBehaviour
         float hungerDecrease = _hungerDecreaseRatePerHour * hoursPassed;
         float thirstDecrease = _thirstDecreaseRatePerHour * hoursPassed;
         float cleanDecrease = _cleanDecreaseRatePerHour * hoursPassed;
-        float funDecrease = _cleanDecreaseRatePerHour * hoursPassed;
+        float funDecrease = _funDecreaseRatePerHour * hoursPassed;
         float energyDecrease = _energyDecreaseRatePerHour * hoursPassed;
         UpdateLifeStage();
         CalculateHappiness();
@@ -300,6 +302,8 @@ public class StatsManager : MonoBehaviour
 
     public void ResetPet()
     {
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
         // Reset UI Elements
         uiManager.StartGame();
         //uiMnanager.UpdateStageText(GetFormattedStage());
@@ -320,11 +324,7 @@ public class StatsManager : MonoBehaviour
         petBehavior.ResetDeath();
         stageAnimator.enabled = true;
         _hasPlayerDied = false;
-
         ApplyLifeStageToAnimator(CurrentLifeStage);
-        PlayerPrefs.DeleteAll();
-        //GetFormattedStage();
-        PlayerPrefs.Save();
     }
 
     public HealButtonEffect healButtonEffect;
@@ -332,7 +332,7 @@ public class StatsManager : MonoBehaviour
     private void UpdateHealthStatus()
     {
         // Check if the happiness is below the threshold
-        if (HappinessPercent < 0.9f) // 20%
+        if (HappinessPercent < 0.2f) // 20%
         {
             // Increase the duration of low happiness
             _lowHappinessDuration += Time.deltaTime / 3600f; // Convert seconds to hours
@@ -344,7 +344,7 @@ public class StatsManager : MonoBehaviour
         }
 
         // Check if the pet has been unhappy for 12 hours or more
-        if (_lowHappinessDuration >= 0.0050f) // 5 minutes currently.
+        if (_lowHappinessDuration >= 30f)
         {
             // Change the health status to sick
             _currentHealthStatus = HealthStatus.Sick;
@@ -460,7 +460,7 @@ public class StatsManager : MonoBehaviour
             currentThirst -= _thirstDecreaseRatePerHour * timePassedInHours;
             currentCleanliness -= _cleanDecreaseRatePerHour * timePassedInHours;
             currentFun -= _cleanDecreaseRatePerHour * timePassedInHours;
-            currentHappiness -= _cleanDecreaseRatePerHour * timePassedInHours;
+            currentHappiness -= _funDecreaseRatePerHour * timePassedInHours;
             currentEnergy -= _energyDecreaseRatePerHour * timePassedInHours;
 
             // Ensure that stats don't go below zero or exceed their maximum values.

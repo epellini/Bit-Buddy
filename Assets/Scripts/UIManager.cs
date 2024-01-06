@@ -14,9 +14,18 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Sprite deathSprite;
     [SerializeField] private GameObject Pet;
     [SerializeField] private GameObject _gameOverPanel;
+    public PetName petName;
+    [SerializeField] private TMP_Text _ageText, _stageText, _nameText; // Declare text
 
-    [SerializeField] private TMP_Text _hungerText, _thirstText, _cleanlinessText, _funText, _happinessText, _ageText, _stageText; // Declare text
-
+    private void Start()
+    {
+        _gameOverPanel.SetActive(false);
+        string petName = PlayerPrefs.GetString("PetName");
+        _nameText.text = petName;
+        //_pausePanel.SetActive(false);
+        //_startPanel.SetActive(true);
+        //_winPanel.SetActive(false);
+    }
     private void FixedUpdate()
     {
         _hungerMeter.fillAmount = _statsManager.HungerPercent; // Set the fill amount of the image to the hunger percent
@@ -26,7 +35,6 @@ public class UIManager : MonoBehaviour
         _happinessMeter.fillAmount = _statsManager.HappinessPercent; // Set the fill amount of the image to the happiness percent
         _energyMeter.fillAmount = _statsManager.EnergyPercent; // Set the fill amount of the image to the energy percent
 
-
         if (_statsManager.CurrentHealthStatus == StatsManager.HealthStatus.Healthy)
         {
             _healthStatus.sprite = _healthySprite;
@@ -35,7 +43,6 @@ public class UIManager : MonoBehaviour
         {
             _healthStatus.sprite = _sickSprite;
         }
-
 
         // Update the age display
         if (_ageText != null && _statsManager != null)
@@ -47,7 +54,6 @@ public class UIManager : MonoBehaviour
         {
             _stageText.text = _statsManager.GetFormattedStage();
         }
-
     }
 
     // [SerializeField] private GameObject _pausePanel;
@@ -65,13 +71,6 @@ public class UIManager : MonoBehaviour
         StatsManager.OnPlayerDeath -= GameOver;
     }
 
-    private void Start()
-    {
-        _gameOverPanel.SetActive(false);
-        //_pausePanel.SetActive(false);
-        //_startPanel.SetActive(true);
-        //_winPanel.SetActive(false);
-    }
     public void GameOver()
     {
         SpriteRenderer spriteRenderer = Pet.GetComponent<SpriteRenderer>();
@@ -126,6 +125,5 @@ public class UIManager : MonoBehaviour
     // {
     //     Application.Quit();
     // }
-
 
 }

@@ -32,10 +32,10 @@ public class ConsoleMessages : MonoBehaviour
     // ClearMessageAfterSeconds(3.0f); // This will clear the message after 3 seconds
 
     // Hunger related messages:
-public void ShowAngryNoEatMessage() { UpdateConsoleMessage("Grrr! Not in the mood for snacks!"); }
-public void ShowSickNoEatMessage() { UpdateConsoleMessage("Ugh, my tummy's rumbling in a bad way... No food, please!"); }
-public void ShowFullNoEatMessage() { UpdateConsoleMessage("No more, please! I'm stuffed!"); }
-public void ShowOverFeedingMessage() { UpdateConsoleMessage("I'm feeling grumpy from too much food!"); }
+public void ShowAngryNoEatMessage() { UpdateConsoleMessage("Grrr! Not in the mood for snacks!"); ClearMessageAfterSeconds(4.0f); }
+public void ShowSickNoEatMessage() { UpdateConsoleMessage("Ugh, my tummy's rumbling in a bad way... No food, please!"); ClearMessageAfterSeconds(4.0f); }
+public void ShowFullNoEatMessage() { UpdateConsoleMessage("No more, please! I'm stuffed!"); ClearMessageAfterSeconds(4.0f); }
+public void ShowOverFeedingMessage() { UpdateConsoleMessage("I'm feeling grumpy from too much food!"); ClearMessageAfterSeconds(4.0f); }
 public void ShowHungryMessage() { UpdateConsoleMessage("My belly's rumbling... It's snack time!"); }
 
 // Thirst related messages:
@@ -46,13 +46,13 @@ public void ShowOverDrinkingMessage() { UpdateConsoleMessage("Too much water mak
 public void ShowThirstyMessage() { UpdateConsoleMessage("Water, please! I'm parched!"); }
 
 // Cleanliness related messages:
-public void ShowAngryNoCleanMessage() { UpdateConsoleMessage("No baths, please! I'm not in the mood!"); }
-public void ShowFullNoCleanMessage() { UpdateConsoleMessage("I'm squeaky clean! No baths needed!"); }
+public void ShowAngryNoCleanMessage() { UpdateConsoleMessage("No baths, please! I'm not in the mood!"); ClearMessageAfterSeconds(4.0f); }
+public void ShowFullNoCleanMessage() { UpdateConsoleMessage("I'm squeaky clean! No baths needed!"); ClearMessageAfterSeconds(4.0f); }
 public void ShowDirtyMessage() { UpdateConsoleMessage("I'm feeling grubby, time for a bath!"); }
 
 // Fun related messages:
-public void ShowAngryNoPlayMessage() { UpdateConsoleMessage("Playtime? No thanks, I'm not feeling it!"); }
-public void ShowFullNoPlayMessage() { UpdateConsoleMessage("I'm all played out! Let's rest for now!"); }
+public void ShowAngryNoPlayMessage() { UpdateConsoleMessage("Playtime? No thanks, I'm not feeling it!"); ClearMessageAfterSeconds(4.0f); }
+public void ShowFullNoPlayMessage() { UpdateConsoleMessage("I'm all played out! Let's rest for now!"); ClearMessageAfterSeconds(4.0f); }
 public void ShowBoredMessage() { UpdateConsoleMessage("So bored! Let's do something fun!"); }
 
 // Health related messages:
@@ -71,7 +71,7 @@ public void ShowNoLongerDirtyMessage() { UpdateConsoleMessage("Look at me! I'm s
 public void ShowNoLongerAngryMessage() { UpdateConsoleMessage("Phew! I'm back to my happy self!"); ClearMessageAfterSeconds(4.0f); }
 public void ShowNoLongerSickMessage() { UpdateConsoleMessage("Hooray! I'm feeling tip-top again!"); ClearMessageAfterSeconds(4.0f); }
 
-public void ShowAngryMessage() { UpdateConsoleMessage("I'm in a huff! Better watch out!"); }
+public void ShowAngryMessage() { UpdateConsoleMessage("You made me angry. Better watch out!"); }
 public void ShowHappinessMessage() { UpdateConsoleMessage("Feeling blue... Could use some cheering up!"); }
 
 

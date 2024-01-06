@@ -3,25 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-
 public class PetName : MonoBehaviour
 {
-    public string petName;
-    public string savePetName;
-    public TMP_InputField nameInputField; // Assign this in the inspector
-    public TextMeshProUGUI petNameText;
+    public Button playButton;
+    public TMP_InputField nameInputField;
 
-    void Update(){
-        petName = PlayerPrefs.GetString("PetName", "DefaultName");
-        petNameText.text = petName;
+    private void Start(){
+        UpdatePlayButtonState();
+        nameInputField.onValueChanged.AddListener(delegate { UpdatePlayButtonState(); });
     }
     public void SetName()
     {
-        savePetName = nameInputField.text;
+        string savePetName = nameInputField.text;
         PlayerPrefs.SetString("PetName", savePetName);
-        // Don't forget to save PlayerPrefs
+        //PlayerPrefs.SetInt("HasStaredGame",1);
         PlayerPrefs.Save();
+        //UnityEngine.SceneManagement.SceneManager.LoadScene("Game");
     }
 
-
+    public void UpdatePlayButtonState()
+    {
+        if(!string.IsNullOrWhiteSpace(nameInputField.text) && nameInputField.text.Length >= 3)
+        {
+            playButton.interactable = true;
+        }
+        else
+        {
+            playButton.interactable = false;
+        }
+    }
 }
