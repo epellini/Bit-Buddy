@@ -1,43 +1,61 @@
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
 
 public class EggClickHandler : MonoBehaviour
 {
-    public int requiredClicks = 5; // Number of clicks needed to transition
-    private int currentClickCount = 0; // Current number of clicks
-    public Vector3 clickScaleChange = new Vector3(0.1f, 0.1f, 0.1f); // Temporary scale change on click
-    private Vector3 originalScale; // To store the original scale
+    public GameStateManager gameStateManager;
+    public int requiredClicks = 6;
+    private int currentClickCount = 0;
+    public Button uiButton;
+    public Image eggImage; // The UI Image component representing the egg
+
+    // Array of Sprites to switch between each click
+    public Sprite[] eggSprites;
 
     void Start()
     {
-        // Store the original scale of the egg
-        originalScale = transform.localScale;
+        uiButton.onClick.AddListener(OnButtonClick);
+        if(eggSprites.Length > 0)
+        {
+            // Start with the first sprite
+            eggImage.sprite = eggSprites[0];
+        }
     }
 
-    void OnMouseDown()
+    void OnButtonClick()
     {
-        // Increase the click count
         currentClickCount++;
+        StartCoroutine(ChangeSize());
 
-        // Temporarily scale up the egg for visual feedback
-        transform.localScale = originalScale + clickScaleChange;
-
-        // Check if the required number of clicks has been reached
-        if(currentClickCount >= requiredClicks)
+        // Switch to the next sprite, if available
+        if (currentClickCount < eggSprites.Length)
         {
-            // Transition to the next stage
+            eggImage.sprite = eggSprites[currentClickCount];
+        }
+
+        if (currentClickCount >= requiredClicks)
+        {
             TransitionToNextStage();
         }
     }
 
-    void OnMouseUp()
+    IEnumerator ChangeSize()
     {
-        // When the click is released, scale back down to original size
-        transform.localScale = originalScale;
+        // Temporarily increase the button's scale
+        uiButton.transform.localScale *= 1.05f; // Adjust the multiplier as needed for desired effect
+
+        // Wait for a short duration
+        yield return new WaitForSeconds(0.2f); // Adjust time as needed
+
+        // Revert to the original scale
+        uiButton.transform.localScale = Vector3.one;
     }
 
     void TransitionToNextStage()
     {
-        Debug.Log("Egg has transitioned to the next stage!");
-        // Implement the logic to transition the egg to the next stage
+        Debug.Log("Transition to next stage!");
+        currentClickCount = 0; // Reset click count for next time
+        gameStateManager.StartGame(); // Placeholder for whatever transition you need
     }
 }

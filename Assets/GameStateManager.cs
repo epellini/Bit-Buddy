@@ -4,6 +4,7 @@ public class GameStateManager : MonoBehaviour
     public static GameStateManager Instance { get; private set; }
     public GameObject menuCanvas;
     public GameObject gameCanvas;
+    public GameObject eggCanvas;
     public GameLogicController gameLogicController;
     private const string HasStartedKey = "HasStartedGame";
 
@@ -38,7 +39,7 @@ public class GameStateManager : MonoBehaviour
 
     public void ActivateGame()
     {
-        menuCanvas.SetActive(false);
+        eggCanvas.SetActive(false);
         gameCanvas.SetActive(true);
         gameLogicController.StartGame();
     }
@@ -46,8 +47,17 @@ public class GameStateManager : MonoBehaviour
     public void ActivateMenu()
     {
         menuCanvas.SetActive(true);
+        eggCanvas.SetActive(false);
         gameCanvas.SetActive(false);
         gameLogicController.StopGame();
+    }
+
+    public void StartEggSequence()
+    {
+        menuCanvas.SetActive(false);
+        eggCanvas.SetActive(true);
+        //PlayerPrefs.SetInt(HasStartedKey, 1);
+        //PlayerPrefs.Save();
     }
 
     // Call this method when the player presses "Play Now"
@@ -55,7 +65,7 @@ public class GameStateManager : MonoBehaviour
     {
         ActivateGame();
         PlayerPrefs.SetInt(HasStartedKey, 1);
-        PlayerPrefs.Save();
+       PlayerPrefs.Save();
     }
 
      public void ResetGame()
