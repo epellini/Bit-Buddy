@@ -12,20 +12,21 @@ public class StatsManager : MonoBehaviour
 {
     public PetBehavior petBehavior;
     private Animator stageAnimator;
-    public RuntimeAnimatorController eggController;
+    //public RuntimeAnimatorController eggController;
     public RuntimeAnimatorController babyController;
+    public RuntimeAnimatorController childController;
     public RuntimeAnimatorController adultController;
     public RuntimeAnimatorController seniorController;
     public RuntimeAnimatorController deathController;
 
-    public enum LifeStage { Egg, Baby, Adult, Senior, Death }
-    public LifeStage CurrentLifeStage { get; private set; } = LifeStage.Egg;
+    public enum LifeStage { Baby, Child, Adult, Senior, Death }
+    public LifeStage CurrentLifeStage { get; private set; } = LifeStage.Baby;
 
     // // Time requirements for each stage
-    private readonly TimeSpan eggTimeRequirement = TimeSpan.FromSeconds(25);
-    private readonly TimeSpan babyTimeRequirement = TimeSpan.FromDays(3);
-    private readonly TimeSpan adultTimeRequirement = TimeSpan.FromDays(25);
-    private readonly TimeSpan seniorTimeRequirement = TimeSpan.FromDays(35);
+    private readonly TimeSpan babyTimeRequirement = TimeSpan.FromSeconds(10);
+    private readonly TimeSpan childTimeRequirement = TimeSpan.FromSeconds(20);
+    private readonly TimeSpan adultTimeRequirement = TimeSpan.FromSeconds(30);
+    private readonly TimeSpan seniorTimeRequirement = TimeSpan.FromSeconds(40); // Need to change this to something else eventually.
 
     private float _hungerDecreaseRatePerHour = 16.67f; // 6 hours to reach 0
     private float _thirstDecreaseRatePerHour = 25f; // 4 hours to reach 0
@@ -162,7 +163,7 @@ public class StatsManager : MonoBehaviour
                 _lowHappinessDuration += (float)timePassedSinceLastCheck.TotalHours;
             }
             // Cap the _lowHappinessDuration to a maximum to avoid excessive accumulation
-            _lowHappinessDuration = Mathf.Min(_lowHappinessDuration, 12f);
+            _lowHappinessDuration = Mathf.Min(_lowHappinessDuration, 60f);
         }
         else
         {
@@ -288,7 +289,7 @@ public class StatsManager : MonoBehaviour
         }
 
             // Handle player death or any other relevant logic.
-        if (!_hasPlayerDied && _lowHappinessDuration >= 0.0070f)
+        if (!_hasPlayerDied && _lowHappinessDuration >= 42f || CurrentLifeStage == LifeStage.Death)
         {
             emotionAnimator.enabled = false;            
             uiManager.GameOver();
@@ -318,7 +319,7 @@ public class StatsManager : MonoBehaviour
         _lastUpdateTime = DateTime.Now;
         _petBirthTime = DateTime.Now;
         _currentPetAge = TimeSpan.Zero;
-        CurrentLifeStage = LifeStage.Egg;
+        CurrentLifeStage = LifeStage.Baby;
         emotionAnimator.enabled = true;
         emotionAnimator.VeryHappyMood();
         petBehavior.ResetDeath();
@@ -343,8 +344,8 @@ public class StatsManager : MonoBehaviour
             _lowHappinessDuration = 0f;
         }
 
-        // Check if the pet has been unhappy for 12 hours or more
-        if (_lowHappinessDuration >= 30f)
+        // Check if the pet has been unhappy for 30 hours or more
+        if (_lowHappinessDuration >= 14f)
         {
             // Change the health status to sick
             _currentHealthStatus = HealthStatus.Sick;
@@ -488,6 +489,14 @@ public class StatsManager : MonoBehaviour
         // {currentPetAge.Hours} hours, {currentPetAge.Minutes} minutes, {currentPetAge.Seconds} seconds";
     }
 
+    public PetName petName;
+
+    public string GetFormattedName()
+    {
+        string petName = PlayerPrefs.GetString("PetName");
+        return petName.ToString();
+    }
+
     public string GetFormattedStage()
     {
         //return CurrentLifeStage.ToString();
@@ -509,12 +518,12 @@ public class StatsManager : MonoBehaviour
         TimeSpan age = _currentPetAge;
         LifeStage previousStage = CurrentLifeStage;
 
-        if (CurrentLifeStage == LifeStage.Egg && age >= eggTimeRequirement)
+        if (CurrentLifeStage == LifeStage.Baby && age >= babyTimeRequirement)
         {
-            CurrentLifeStage = LifeStage.Baby;
-            Debug.Log("Transitioned to Baby Stage");
+            CurrentLifeStage = LifeStage.Child;
+            Debug.Log("Transitioned to Child Stage");
         }
-        else if (CurrentLifeStage == LifeStage.Baby && age >= babyTimeRequirement)
+        else if (CurrentLifeStage == LifeStage.Child && age >= childTimeRequirement)
         {
             CurrentLifeStage = LifeStage.Adult;
             Debug.Log("Transitioned to Adult Stage");
@@ -541,11 +550,11 @@ public class StatsManager : MonoBehaviour
     {
         switch (stage)
         {
-            case LifeStage.Egg:
-                stageAnimator.runtimeAnimatorController = eggController;
-                break;
             case LifeStage.Baby:
                 stageAnimator.runtimeAnimatorController = babyController;
+                break;
+            case LifeStage.Child:
+                stageAnimator.runtimeAnimatorController = childController;
                 break;
             case LifeStage.Adult:
                 stageAnimator.runtimeAnimatorController = adultController;

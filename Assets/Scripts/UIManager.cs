@@ -54,6 +54,12 @@ public class UIManager : MonoBehaviour
         {
             _stageText.text = _statsManager.GetFormattedStage();
         }
+
+
+        if (_nameText != null && _statsManager != null)
+        {
+            _nameText.text = _statsManager.GetFormattedName();
+        }
     }
 
     // [SerializeField] private GameObject _pausePanel;
