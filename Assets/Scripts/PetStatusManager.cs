@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
@@ -11,7 +12,6 @@ public class StatsManager : MonoBehaviour
 {
     public PetBehavior petBehavior;
     private Animator stageAnimator;
-    //public RuntimeAnimatorController eggController;
     public RuntimeAnimatorController babyController;
     public RuntimeAnimatorController childController;
     public RuntimeAnimatorController adultController;
@@ -22,10 +22,10 @@ public class StatsManager : MonoBehaviour
     public LifeStage CurrentLifeStage { get; private set; } = LifeStage.Baby;
 
     // // Time requirements for each stage
-    private readonly TimeSpan babyTimeRequirement = TimeSpan.FromSeconds(10);
-    private readonly TimeSpan childTimeRequirement = TimeSpan.FromSeconds(20);
-    private readonly TimeSpan adultTimeRequirement = TimeSpan.FromSeconds(30);
-    private readonly TimeSpan seniorTimeRequirement = TimeSpan.FromSeconds(40); // Need to change this to something else eventually.
+    private readonly TimeSpan babyTimeRequirement = TimeSpan.FromHours(14);
+    private readonly TimeSpan childTimeRequirement = TimeSpan.FromDays(5);
+    private readonly TimeSpan adultTimeRequirement = TimeSpan.FromDays(30);
+    private readonly TimeSpan seniorTimeRequirement = TimeSpan.FromDays(4000); // Need to change this to something else eventually.
 
     private float _hungerDecreaseRatePerHour = 16.67f; // 6 hours to reach 0
     private float _thirstDecreaseRatePerHour = 25f; // 4 hours to reach 0
@@ -86,30 +86,26 @@ public class StatsManager : MonoBehaviour
     private TimeSpan _currentPetAge;
     public EmotionAnimations emotionAnimator;
 
-    // Provide public access to the DateTime and TimeSpan variables
-    // public DateTime LastUpdateTime => _lastUpdateTime;
-    // public DateTime PetBirthTime => _petBirthTime;
-    // public TimeSpan CurrentPetAge => _currentPetAge;
-
     public UIManager uiManager;
+
+    private const string IsPetCreatedKey = "IsPetCreated";
 
     private void Start()
     {
+        CheckJustBorn();
         petBehavior = GetComponent<PetBehavior>();
         stageAnimator = GetComponent<Animator>();
         UpdateLifeStage();
-        // Load current life stage
         CurrentLifeStage = (LifeStage)PlayerPrefs.GetInt("CurrentLifeStage");
-        //CurrentLifeStage = (LifeStage)PlayerPrefs.GetInt("CurrentLifeStage", (int)LifeStage.Egg);
         Debug.Log("Current Life Stage: " + CurrentLifeStage.ToString());
 
         string birthTimeStr = PlayerPrefs.GetString("PetBirthTime", "");
         if (!string.IsNullOrEmpty(birthTimeStr))
         {
-            long temp;
-            if (long.TryParse(birthTimeStr, out temp))
+            long tempBirthTime;
+            if (long.TryParse(birthTimeStr, out tempBirthTime))
             {
-                _petBirthTime = DateTime.FromBinary(temp);
+                _petBirthTime = DateTime.FromBinary(tempBirthTime);
             }
         }
         else
@@ -119,85 +115,24 @@ public class StatsManager : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-
-        // Initialize _lastUpdateTime using PlayerPrefs or current time
         string lastPlayTimeStr = PlayerPrefs.GetString("LastPlayTime", "");
-        if (!string.IsNullOrEmpty(lastPlayTimeStr))
+        DateTime lastPlayTime;
+        if (!string.IsNullOrEmpty(lastPlayTimeStr) && long.TryParse(lastPlayTimeStr, out long tempLastPlayTime))
         {
-            long temp;
-            if (long.TryParse(lastPlayTimeStr, out temp))
-            {
-                _lastUpdateTime = DateTime.FromBinary(temp);
-                TimeSpan timeSinceLastPlay = DateTime.Now - _lastUpdateTime;
-                _currentPetAge += timeSinceLastPlay;
-            }
-            else
-            {
-                // Set a default value for _lastUpdateTime if parsing fails
-                _lastUpdateTime = DateTime.Now;
-                PlayerPrefs.SetString("LastPlayTime", _lastUpdateTime.ToBinary().ToString());
-                PlayerPrefs.Save();
-            }
+            lastPlayTime = DateTime.FromBinary(tempLastPlayTime);
         }
         else
         {
-            _lastUpdateTime = DateTime.Now;
-            PlayerPrefs.SetString("LastPlayTime", _lastUpdateTime.ToBinary().ToString());
-            PlayerPrefs.Save();
+            lastPlayTime = DateTime.Now;
+            PlayerPrefs.SetString("LastPlayTime", lastPlayTime.ToBinary().ToString());
         }
 
-        // Load the last saved health status and low happiness duration
-        _currentHealthStatus = (HealthStatus)PlayerPrefs.GetInt(HealthStatusKey, 0); // Assuming 0 is healthy, 1 is sick
-        _lowHappinessDuration = PlayerPrefs.GetFloat(LowHappinessDurationKey, 0f);
+        TimeSpan timeSinceLastPlay = DateTime.Now - lastPlayTime;
+        ApplyTimePassedToStats(timeSinceLastPlay);
 
-        string lastHealthCheckTimeStr = PlayerPrefs.GetString(LastHealthCheckTimeKey, "");
-        if (!string.IsNullOrEmpty(lastHealthCheckTimeStr))
-        {
-            DateTime lastHealthCheckTime = DateTime.FromBinary(Convert.ToInt64(lastHealthCheckTimeStr));
-            TimeSpan timePassedSinceLastCheck = DateTime.Now - lastHealthCheckTime;
+        //LoadStats(out _currentHunger, out _currentThirst, out _currentCleanliness, out _currentFun, out _currentHappiness, out _currentEnergy);
 
-            // Update the low happiness duration based on the time passed
-            if (_currentHealthStatus == HealthStatus.Sick || HappinessPercent < 0.2f)
-            {
-                _lowHappinessDuration += (float)timePassedSinceLastCheck.TotalHours;
-            }
-            // Cap the _lowHappinessDuration to a maximum to avoid excessive accumulation
-            _lowHappinessDuration = Mathf.Min(_lowHappinessDuration, 60f);
-        }
-        else
-        {
-            // If there's no last check time, set the current time as the last check time
-            PlayerPrefs.SetString(LastHealthCheckTimeKey, DateTime.Now.ToBinary().ToString());
-        }
-
-        // Check if PlayerPrefs have been set for hunger and thirst, and if not, use default values.
-        if (!PlayerPrefs.HasKey(HungerKey) || !PlayerPrefs.HasKey(ThirstKey) || !PlayerPrefs.HasKey(CleanlinessKey) || !PlayerPrefs.HasKey(FunKey) || !PlayerPrefs.HasKey(HappinessKey) || !PlayerPrefs.HasKey(EnergyKey))
-        {
-            _currentHunger = _maxHunger; // Set a default value for hunger
-            _currentThirst = _maxThirst; // Set a default value for thirst
-            _currentCleanliness = _maxCleanliness; // Set a default value for cleanliness
-            _currentFun = _maxFun; // Set a default value for fun
-            _currentHappiness = _maxHappiness; // Set a default value for happiness
-            _currentEnergy = _maxEnergy; // Set a default value for energy
-        }
-        else
-        {
-            // Load the saved hunger and thirst values from PlayerPrefs
-            _currentHunger = PlayerPrefs.GetFloat(HungerKey, _maxHunger);
-            _currentThirst = PlayerPrefs.GetFloat(ThirstKey, _maxThirst);
-            _currentCleanliness = PlayerPrefs.GetFloat(CleanlinessKey, _maxCleanliness);
-            _currentFun = PlayerPrefs.GetFloat(FunKey, _maxFun);
-            _currentHappiness = PlayerPrefs.GetFloat(HappinessKey, _maxHappiness);
-            _currentEnergy = PlayerPrefs.GetFloat(EnergyKey, _maxEnergy);
-        }
-
-        // Load player stats (hunger and thirst) from PlayerPrefs
-        LoadStats(out _currentHunger, out _currentThirst, out _currentCleanliness, out _currentFun, out _currentHappiness, out _currentEnergy);
-
-        // Calculate time passed using TimeSpan
-        TimeSpan timePassed = DateTime.Now - _lastUpdateTime;
-
-        // Ensure that stats don't go below zero or exceed their maximum values.
+        TimeSpan timePassed = DateTime.Now - lastPlayTime;
         _currentHunger = Mathf.Clamp(_currentHunger, 0, _maxHunger);
         _currentThirst = Mathf.Clamp(_currentThirst, 0, _maxThirst);
         _currentCleanliness = Mathf.Clamp(_currentCleanliness, 0, _maxCleanliness);
@@ -205,19 +140,37 @@ public class StatsManager : MonoBehaviour
         _currentHappiness = Mathf.Clamp(_currentHappiness, 0, _maxHappiness);
         _currentEnergy = Mathf.Clamp(_currentEnergy, 0, _maxEnergy);
 
-        // Update health status based on new low happiness duration
         UpdateHealthStatus();
         ApplyLifeStageToAnimator(CurrentLifeStage);
-
-        // Store the current time as the last update time
         _lastUpdateTime = DateTime.Now;
         PlayerPrefs.SetString("LastPlayTime", _lastUpdateTime.ToBinary().ToString());
         PlayerPrefs.Save();
-
         Debug.Log($"Current Hunger: {_currentHunger}, Current Thirst: {_currentThirst}, Current Cleanliness: {_currentCleanliness}, Current Fun: {_currentFun}, Current Happiness: {_currentHappiness}");
         Debug.Log($"Time Passed: {timePassed}");
-        Debug.Log($"Time IN Seconds Passed: {timePassed.TotalSeconds} seconds");
+    }
 
+
+    public void CheckJustBorn()
+    {
+       // Check if it's the first time creating the pet
+        if (PlayerPrefs.GetInt(IsPetCreatedKey, 0) == 0)
+        {
+            // It's the first time, set all needs to 50%
+            _currentHunger = _maxHunger * 0.5f;
+            _currentThirst = _maxThirst * 0.5f;
+            _currentCleanliness = _maxCleanliness * 0.5f;
+            _currentFun = _maxFun * 0.5f;
+            _currentHappiness = _maxHappiness * 0.5f;
+            _currentEnergy = _maxEnergy * 0.5f;
+
+            // Now mark that the pet has been created
+            PlayerPrefs.SetInt(IsPetCreatedKey, 1);
+        }
+        else
+        {
+            // Not the first time, load stats from PlayerPrefs or set to full
+            LoadStats(out _currentHunger, out _currentThirst, out _currentCleanliness, out _currentFun, out _currentHappiness, out _currentEnergy);
+        }
     }
     private bool _hasPlayerDied;
     private void Update()
@@ -226,83 +179,51 @@ public class StatsManager : MonoBehaviour
         DateTime currentTime = DateTime.Now;
         TimeSpan timePassed = currentTime - _lastUpdateTime;
         _lastUpdateTime = currentTime;
+
+        // Apply the time passed to the stats
+        ApplyTimePassedToStats(timePassed);
+
+        // Other game logic
         ApplyLifeStageToAnimator(CurrentLifeStage);
-
-        // Convert time passed to hours (assuming your decrease rates are per hour).
-        float hoursPassed = (float)timePassed.TotalHours;
-
-        // Decrease hunger and thirst based on the time passed and decrease rates per hour.
-        float hungerDecrease = _hungerDecreaseRatePerHour * hoursPassed;
-        float thirstDecrease = _thirstDecreaseRatePerHour * hoursPassed;
-        float cleanDecrease = _cleanDecreaseRatePerHour * hoursPassed;
-        float funDecrease = _funDecreaseRatePerHour * hoursPassed;
-        float energyDecrease = _energyDecreaseRatePerHour * hoursPassed;
         UpdateLifeStage();
         CalculateHappiness();
         UpdateHealthStatus();
-        
 
-        if (_currentHunger > 0)
+        // Handle player death or any other relevant logic.
+        if (!_hasPlayerDied && (_lowHappinessDuration >= 42f || CurrentLifeStage == LifeStage.Death))
         {
-            _currentHunger -= hungerDecrease;
-            if (_currentHunger < 0)
-            {
-                _currentHunger = 0;
-            }
-        }
-
-        if (_currentThirst > 0)
-        {
-            _currentThirst -= thirstDecrease;
-            if (_currentThirst < 0)
-            {
-                _currentThirst = 0;
-            }
-        }
-
-        if (_currentCleanliness > 0)
-        {
-            _currentCleanliness -= cleanDecrease;
-            if (_currentCleanliness < 0)
-            {
-                _currentCleanliness = 0;
-            }
-        }
-
-        if (_currentFun > 0)
-        {
-            _currentFun -= funDecrease;
-            if (_currentFun < 0)
-            {
-                _currentFun = 0;
-            }
-        }
-
-        if (_currentEnergy > 0)
-        {
-            _currentEnergy -= energyDecrease;
-            if (_currentEnergy < 0)
-            {
-                _currentEnergy = 0;
-            }
-        }
-
-            // Handle player death or any other relevant logic.
-        if (!_hasPlayerDied && _lowHappinessDuration >= 42f || CurrentLifeStage == LifeStage.Death)
-        {
-            emotionAnimator.enabled = false;            
+            emotionAnimator.enabled = false;
             uiManager.GameOver();
             _hasPlayerDied = true;
             CurrentLifeStage = LifeStage.Death;
             stageAnimator.enabled = false;
             OnPlayerDeath?.Invoke();
         }
+
+    }
+
+
+    private void ApplyTimePassedToStats(TimeSpan timePassed)
+    {
+        float hoursPassed = (float)timePassed.TotalHours;
+
+        //calculate decrease rates
+        _currentHunger = Mathf.Clamp(_currentHunger - _hungerDecreaseRatePerHour * hoursPassed, 0, _maxHunger);
+        _currentThirst = Mathf.Clamp(_currentThirst - _thirstDecreaseRatePerHour * hoursPassed, 0, _maxThirst);
+        _currentCleanliness = Mathf.Clamp(_currentCleanliness - _cleanDecreaseRatePerHour * hoursPassed, 0, _maxCleanliness);
+        _currentFun = Mathf.Clamp(_currentFun - _funDecreaseRatePerHour * hoursPassed, 0, _maxFun);
+        _currentHappiness = Mathf.Clamp(_currentHappiness - _funDecreaseRatePerHour * hoursPassed, 0, _maxHappiness);
+        _currentEnergy = Mathf.Clamp(_currentEnergy - _energyDecreaseRatePerHour * hoursPassed, 0, _maxEnergy);
+
+        // Update health status based on new low happiness duration
+        UpdateHealthStatus();
     }
 
 
     public void ResetPet()
     {
         PlayerPrefs.DeleteAll();
+        PlayerPrefs.SetInt(IsPetCreatedKey, 0);
         PlayerPrefs.Save();
         // Reset UI Elements
         uiManager.StartGame();
@@ -364,7 +285,6 @@ public class StatsManager : MonoBehaviour
     private float cleanlinessWeight = 1f;
     private float funWeight = 0.8f;
     private float energyWeight = 0.7f;
-
     private float happinessChangeRate = 0.0004f;
 
     private void CalculateHappiness()
@@ -473,10 +393,8 @@ public class StatsManager : MonoBehaviour
         }
     }
 
-
     public string GetFormattedAge()
     {
-
         if (CurrentLifeStage == LifeStage.Death)
         {
             return $"DAYS SURVIVED: {_currentPetAge.Days}";
@@ -498,8 +416,6 @@ public class StatsManager : MonoBehaviour
 
     public string GetFormattedStage()
     {
-        //return CurrentLifeStage.ToString();
-
         if (CurrentLifeStage == LifeStage.Death)
         {
             return null;
@@ -679,7 +595,6 @@ public class StatsManager : MonoBehaviour
         }
         return _currentEnergy;
     }
-
     public void HealPet()
     {
         _lowHappinessDuration = 0f;

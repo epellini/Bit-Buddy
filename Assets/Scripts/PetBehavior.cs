@@ -51,7 +51,7 @@ public class PetBehavior : MonoBehaviour
         UpdateHappiness();
 
         //Energy
-        if (currentEnergyPercentage < 0.1f)
+        if (currentEnergyPercentage < 0.3f)
         {
             currentMood = PetMood.Tired;
         }
@@ -61,7 +61,7 @@ public class PetBehavior : MonoBehaviour
         }
 
         //Cleanliness
-        if (currentCleanlinessPercentage < 0.15f)
+        if (currentCleanlinessPercentage < 0.2f)
         {
             currentMood = PetMood.Dirty;
         }
@@ -71,7 +71,7 @@ public class PetBehavior : MonoBehaviour
         }
 
         /// HUNGER
-        if (currentHungerPercentage < 0.3f)
+        if (currentHungerPercentage < 0.5f)
         {
             currentMood = PetMood.Hungry;
         }
@@ -81,7 +81,7 @@ public class PetBehavior : MonoBehaviour
         }
 
         // FUN
-        if (currentFunPercentage < 0.2f)
+        if (currentFunPercentage < 0.5f)
         {
             currentMood = PetMood.Bored;
         }
@@ -153,7 +153,7 @@ public class PetBehavior : MonoBehaviour
         UpdateHappiness();
 
         //handle mood due to ENERGY
-        if (currentEnergyPercentage < 0.1f)
+        if (currentEnergyPercentage < 0.3f)
         {
             if (currentMood != PetMood.Tired)
             {
@@ -163,7 +163,7 @@ public class PetBehavior : MonoBehaviour
         else if (currentMood == PetMood.Tired) { ResetTiredMood(); }
 
         //Handle mood due to CLEANLINESS
-        if (currentCleanlinessPercentage < 0.15f)
+        if (currentCleanlinessPercentage < 0.2f)
         {
             if (currentMood != PetMood.Dirty)
             {
@@ -173,7 +173,7 @@ public class PetBehavior : MonoBehaviour
         else if (currentMood == PetMood.Dirty) { ResetDirtyMood(); }
 
         // Handle mood due to THIRST
-        if (currentThirstPercentage < 0.3f)
+        if (currentThirstPercentage < 0.4f)
         {
             if (currentMood != PetMood.Thirsty)
             {
@@ -183,7 +183,7 @@ public class PetBehavior : MonoBehaviour
         else if (currentMood == PetMood.Thirsty) { ResetMood(); }
 
         // Handle mood due to BOREDOM
-        if (currentFunPercentage < 0.2f)
+        if (currentFunPercentage < 0.6f)
         {
             if (currentMood != PetMood.Bored)
             {

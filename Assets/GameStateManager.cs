@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 public class GameStateManager : MonoBehaviour
 {
     public static GameStateManager Instance { get; private set; }
@@ -6,7 +7,9 @@ public class GameStateManager : MonoBehaviour
     public GameObject gameCanvas;
     public GameObject eggCanvas;
     public GameLogicController gameLogicController;
+    
     private const string HasStartedKey = "HasStartedGame";
+    private const string IsPetCreatedKey = "IsPetCreated";
 
     void Awake()
     {
@@ -25,54 +28,62 @@ public class GameStateManager : MonoBehaviour
     void Start()
     {
         // Check if the player has previously started the game
+        CheckGameStart();
+    }
+
+    private void CheckGameStart()
+    {
         if (PlayerPrefs.GetInt(HasStartedKey, 0) == 1)
         {
-            // If they have, activate the game directly
             ActivateGame();
         }
         else
         {
-            // Otherwise, start with the menu
             ActivateMenu();
         }
     }
 
+
     public void ActivateGame()
     {
+        Debug.Log("Activating Game Canvas");
         eggCanvas.SetActive(false);
+        menuCanvas.SetActive(false);
         gameCanvas.SetActive(true);
         gameLogicController.StartGame();
     }
 
     public void ActivateMenu()
     {
-        menuCanvas.SetActive(true);
+        Debug.Log("Activating Menu Canvas");
+        gameLogicController.StopGame();
         eggCanvas.SetActive(false);
         gameCanvas.SetActive(false);
-        gameLogicController.StopGame();
+        menuCanvas.SetActive(true);
     }
 
     public void StartEggSequence()
     {
         menuCanvas.SetActive(false);
         eggCanvas.SetActive(true);
-        //PlayerPrefs.SetInt(HasStartedKey, 1);
-        //PlayerPrefs.Save();
     }
 
     // Call this method when the player presses "Play Now"
     public void StartGame()
     {
+        Debug.Log("Starting Game");
         ActivateGame();
         PlayerPrefs.SetInt(HasStartedKey, 1);
-       PlayerPrefs.Save();
+        PlayerPrefs.Save();
     }
 
-     public void ResetGame()
+    public void ResetGame()
     {
-        // Additional reset logic here...
+        Debug.Log("Resetting Game");
+        PlayerPrefs.DeleteAll();
         PlayerPrefs.SetInt(HasStartedKey, 0);
+        PlayerPrefs.SetInt(IsPetCreatedKey, 0);
         PlayerPrefs.Save();
-        ActivateMenu();
+        CheckGameStart();
     }
 }

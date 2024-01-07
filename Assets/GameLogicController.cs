@@ -5,18 +5,25 @@ using UnityEngine;
 public class GameLogicController : MonoBehaviour
 {
     public GameObject petPlayerObject;
+    private const string HasStartedKey = "HasStartedGame";
     private void Start()
     {
-        // Initially disable the PetPlayer when the scene starts
-        if(petPlayerObject != null)
-            petPlayerObject.SetActive(false);
+        // Check if the game has been started before
+        if (PlayerPrefs.GetInt(HasStartedKey, 0) == 0)
+        {
+            // The game has not been started yet, deactivate the PetPlayer
+            if (petPlayerObject != null)
+                petPlayerObject.SetActive(false);
+        }
+        // If the game has been started before (HasStartedKey == 1), do nothing.
+        // The pet player object's active state will be managed by game state transitions.
     }
-    // Assuming you have methods like these to control the game state
 
     public void StartGame()
     {
+        Debug.Log("Game Started - PetPlayerObject activated");
         // Enable the PetPlayer to start all game logic when the game starts
-        if(petPlayerObject != null)
+        if (petPlayerObject != null)
             petPlayerObject.SetActive(true);
 
         // Additional logic to start the game goes here
@@ -24,8 +31,8 @@ public class GameLogicController : MonoBehaviour
 
     public void StopGame()
     {
-        // Disable the PetPlayer to stop all game logic when the game stops or pauses
-        if(petPlayerObject != null)
+        //Debug.Log("Game Stopped - PetPlayerObject deactivated");
+    if (petPlayerObject != null)
             petPlayerObject.SetActive(false);
 
         // Additional logic to stop or pause the game goes here

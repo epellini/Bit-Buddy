@@ -9,6 +9,8 @@ public class EggClickHandler : MonoBehaviour
     private int currentClickCount = 0;
     public Button uiButton;
     public Image eggImage; // The UI Image component representing the egg
+    private bool isOnCooldown = false;
+    public SoundManager soundManager;
 
     // Array of Sprites to switch between each click
     public Sprite[] eggSprites;
@@ -16,7 +18,7 @@ public class EggClickHandler : MonoBehaviour
     void Start()
     {
         uiButton.onClick.AddListener(OnButtonClick);
-        if(eggSprites.Length > 0)
+        if (eggSprites.Length > 0)
         {
             // Start with the first sprite
             eggImage.sprite = eggSprites[0];
@@ -25,7 +27,13 @@ public class EggClickHandler : MonoBehaviour
 
     void OnButtonClick()
     {
+        Handheld.Vibrate();
         currentClickCount++;
+        // Play the crack sound if it's not the last click
+        if (currentClickCount < requiredClicks)
+        {
+            soundManager.EggCrack();
+        }
         StartCoroutine(ChangeSize());
 
         // Switch to the next sprite, if available
@@ -56,6 +64,16 @@ public class EggClickHandler : MonoBehaviour
     {
         Debug.Log("Transition to next stage!");
         currentClickCount = 0; // Reset click count for next time
+        eggImage.sprite = eggSprites[0];
         gameStateManager.StartGame(); // Placeholder for whatever transition you need
+    }
+
+    IEnumerator CooldownTimer(float cooldownTime)
+    {
+        // Wait for the length of the cooldown time
+        yield return new WaitForSeconds(cooldownTime);
+
+        // Reset the cooldown flag so the action can be performed again
+        isOnCooldown = false;
     }
 }
