@@ -27,11 +27,11 @@ public class StatsManager : MonoBehaviour
     private readonly TimeSpan adultTimeRequirement = TimeSpan.FromDays(30);
     private readonly TimeSpan seniorTimeRequirement = TimeSpan.FromDays(4000); // Need to change this to something else eventually.
 
-    private float _hungerDecreaseRatePerHour = 16.67f; // 6 hours to reach 0
-    private float _thirstDecreaseRatePerHour = 25f; // 4 hours to reach 0
-    private float _cleanDecreaseRatePerHour = 11.11f; // 9 hours to reach 0
-    private float _energyDecreaseRatePerHour = 8.33f; // 12 hours to reach 0
-    private float _funDecreaseRatePerHour = 28.57f; // 3.5 hours to reach 0
+    private float _hungerDecreaseRatePerHour = 3000f; //
+    private float _thirstDecreaseRatePerHour = 200f; // 30 minutes to reach 0
+    private float _cleanDecreaseRatePerHour = 150f; // 40 minutes to reach 0
+    private float _energyDecreaseRatePerHour = 300; // 12 hours to reach 0
+    private float _funDecreaseRatePerHour = 220f; // 18 hours to reach 0
 
     private const string HungerKey = "Hunger";
     private const string ThirstKey = "Thirst";
@@ -92,6 +92,7 @@ public class StatsManager : MonoBehaviour
 
     private void Start()
     {
+        mobileNotifications = FindObjectOfType<MobileNotifications>();
         CheckJustBorn();
         petBehavior = GetComponent<PetBehavior>();
         stageAnimator = GetComponent<Animator>();
@@ -152,7 +153,7 @@ public class StatsManager : MonoBehaviour
 
     public void CheckJustBorn()
     {
-       // Check if it's the first time creating the pet
+        // Check if it's the first time creating the pet
         if (PlayerPrefs.GetInt(IsPetCreatedKey, 0) == 0)
         {
             // It's the first time, set all needs to 50%
@@ -188,6 +189,7 @@ public class StatsManager : MonoBehaviour
         UpdateLifeStage();
         CalculateHappiness();
         UpdateHealthStatus();
+        CheckNotifications();
 
         // Handle player death or any other relevant logic.
         if (!_hasPlayerDied && (_lowHappinessDuration >= 42f || CurrentLifeStage == LifeStage.Death))
@@ -198,6 +200,61 @@ public class StatsManager : MonoBehaviour
             CurrentLifeStage = LifeStage.Death;
             stageAnimator.enabled = false;
             OnPlayerDeath?.Invoke();
+        }
+
+    }
+
+    public MobileNotifications mobileNotifications;
+
+    private const float HungerNotificationThreshold = 85f; // 20% hunger or any value you choose
+    private const float ThirstNotificationThreshold = 5.0f; // 20% thirst or any value you choose
+    private const float CleanlinessNotificationThreshold = 2.0f; // 20% cleanliness or any value you choose
+    private bool hasSentHungerNotification = false;
+    private bool hasSentThirstNotification = false;
+    private bool hasSentCleanlinessNotification = false;
+    private void CheckNotifications()
+    {
+        // Check if hunger is below the threshold and notification hasn't been sent
+        if (_currentHunger <= HungerNotificationThreshold && !hasSentHungerNotification)
+        { Debug.Log("Hunger About to send");
+            if (mobileNotifications != null) // Use the assigned variable
+            {
+                mobileNotifications.SendHungerNotification();
+                Debug.Log("Hunger Notification Sent");
+                hasSentHungerNotification = true; // Ensure notification is only sent once
+            }
+        }
+
+        // Reset the notification flag if the hunger is back to a safe level
+        if (_currentHunger > HungerNotificationThreshold)
+        {
+            hasSentHungerNotification = false;
+        }
+
+        // Check if thirst is below the threshold and notification hasn't been sent
+        if (_currentThirst <= ThirstNotificationThreshold && !hasSentThirstNotification)
+        {
+            if (mobileNotifications != null) // Use the assigned variable
+            {
+                mobileNotifications.SendThirstNotification();
+                hasSentThirstNotification = true; // Ensure notification is only sent once
+            }
+        }
+
+        // Reset the notification flag if the thirst is back to a safe level
+        if (_currentThirst > ThirstNotificationThreshold)
+        {
+            hasSentThirstNotification = false;
+        }
+
+        // Check if cleanliness is below the threshold and notification hasn't been sent
+        if (_currentCleanliness <= CleanlinessNotificationThreshold && !hasSentCleanlinessNotification)
+        {
+            if (mobileNotifications != null) // Use the assigned variable
+            {
+                mobileNotifications.SendCleanlinessNotification();
+                hasSentCleanlinessNotification = true; // Ensure notification is only sent once
+            }
         }
 
     }
